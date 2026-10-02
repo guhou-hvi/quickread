@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/audit-claim.schema.json",
+  "title": "One independently re-extracted audit claim",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "method", "statement", "importance", "supportSpans", "matchedEvidenceRefs", "status"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "id": { "type": "string", "pattern": "^A[0-9]{4,}$" },
+    "method": { "const": "independent-segment-reextract" },
+    "statement": { "type": "string", "minLength": 1 },
+    "importance": { "enum": ["high", "medium", "low"] },
+    "supportSpans": { "type": "array", "minItems": 1, "items": { "$ref": "evidence.schema.json#/properties/supportSpans/items" } },
+    "matchedEvidenceRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^E[0-9]{4,}$" } },
+    "status": { "enum": ["matched", "missing", "disputed"] },
+    "notes": { "type": "string" }
+  }
+}

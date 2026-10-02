@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/participant-guide-review.schema.json",
+  "title": "QuickRead participant guide incremental review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "reviewPolicyVersion", "reviewedAt", "baselineReview", "reviewers", "hardErrors", "warnings", "status"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0", "1.2.0"] },
+    "caseId": { "type": "string" },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "reviewedAt": { "type": "string", "format": "date" },
+    "baselineReview": { "type": "string", "minLength": 1 },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence", "participantGuide", "research", "deepRead", "readerMarkdown"],
+      "properties": {
+        "evidence": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "participantGuide": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "research": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "deepRead": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "brief": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "readerMarkdown": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "roleInputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["external_citation", "reader_advocate"],
+      "properties": {
+        "external_citation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["participantGuide", "citedResearch"],
+          "properties": {
+            "participantGuide": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "citedResearch": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        },
+        "reader_advocate": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["participantGuide", "renderedGuideContext"],
+          "properties": {
+            "participantGuide": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "renderedGuideContext": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        }
+      }
+    },
+    "reviewers": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "reviewerId", "status", "hardErrors", "warnings"],
+        "properties": {
+          "role": { "enum": ["external_citation", "reader_advocate"] },
+          "reviewerId": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["pass", "fail"] },
+          "hardErrors": { "type": "array", "items": { "type": "string" } },
+          "warnings": { "type": "array", "items": { "type": "string" } },
+          "summary": { "type": "string" }
+        }
+      }
+    },
+    "hardErrors": { "type": "array", "items": { "type": "string" } },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "status": { "enum": ["pass", "fail"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "schemaVersion": { "const": "1.0.0" } } },
+      "then": { "required": ["inputHashes"], "properties": { "inputHashes": { "required": ["brief"] } } }
+    },
+    {
+      "if": { "properties": { "schemaVersion": { "const": "1.1.0" } } },
+      "then": { "required": ["inputHashes"] }
+    },
+    {
+      "if": { "properties": { "schemaVersion": { "const": "1.2.0" } } },
+      "then": { "required": ["roleInputHashes"] }
+    }
+  ]
+}

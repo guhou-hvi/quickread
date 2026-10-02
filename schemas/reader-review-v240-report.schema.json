@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/reader-review-v240-report.schema.json",
+  "title": "QuickRead 2.4 lightweight reader review role report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "caseId", "reviewPolicyVersion", "reviewRound", "role", "reviewerId", "packetId", "inputHashes", "hardErrors", "warnings", "diagnostics", "summary"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "role": { "enum": ["source_scout", "fidelity", "reader_advocate"] },
+    "reviewerId": { "type": "string", "minLength": 1 },
+    "packetId": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "packetHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "inputHashes": { "$ref": "reader-review-v240-manifest.schema.json#/$defs/inputHashes" },
+    "hardErrors": { "$ref": "#/$defs/findings" },
+    "warnings": { "$ref": "#/$defs/findings" },
+    "diagnostics": { "$ref": "#/$defs/findings" },
+    "summary": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 },
+        "findingKey": { "type": "string", "minLength": 1 },
+        "readerBlockRef": { "type": "string", "minLength": 1 },
+        "evidenceRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^E[0-9]{4,}$" } },
+        "value": {}
+      }
+    }
+  }
+}

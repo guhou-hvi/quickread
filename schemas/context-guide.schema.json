@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/context-guide.schema.json",
+  "title": "QuickRead key term context guide",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "caseId", "verifiedAt", "entries"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "verifiedAt": { "type": "string", "format": "date" },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "statement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "provenance"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "provenance": { "enum": ["source_fact", "speaker_view", "external"] },
+        "evidenceRefs": { "$ref": "#/$defs/refs" },
+        "citationRefs": { "$ref": "#/$defs/refs" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "provenance": { "const": "external" } },
+            "required": ["provenance"]
+          },
+          "then": { "required": ["citationRefs"] }
+        },
+        {
+          "if": {
+            "properties": { "provenance": { "enum": ["source_fact", "speaker_view"] } },
+            "required": ["provenance"]
+          },
+          "then": { "required": ["evidenceRefs"] }
+        }
+      ]
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "kind", "inlineDefinition", "background", "relevance"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "name": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["product", "project", "organization", "technology", "concept", "event"] },
+        "aliases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "inlineDefinition": { "$ref": "#/$defs/statement" },
+        "background": { "$ref": "#/$defs/statement" },
+        "relevance": { "$ref": "#/$defs/statement" }
+      }
+    }
+  }
+}

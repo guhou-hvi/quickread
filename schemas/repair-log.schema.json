@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/repair-log.schema.json",
+  "title": "QuickRead targeted repair log",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "role", "reviewerId", "reviewRound", "repairRound", "generatedAt", "inputHashes", "outputHashes", "changes", "unresolvedIssueRefs", "briefInvalidated"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "role": { "const": "repair_editor" },
+    "reviewerId": { "type": "string", "minLength": 2 },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "repairRound": { "type": "integer", "minimum": 1, "maximum": 99 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["consensus", "evidence", "deepRead", "readerMap", "research"],
+      "properties": {
+        "consensus": { "$ref": "#/$defs/hash" },
+        "evidence": { "$ref": "#/$defs/hash" },
+        "evidenceMigration": { "$ref": "#/$defs/hash" },
+        "claimBundles": { "$ref": "#/$defs/hash" },
+        "themeMap": { "$ref": "#/$defs/hash" },
+        "deepRead": { "$ref": "#/$defs/hash" },
+        "readerMap": { "$ref": "#/$defs/hash" },
+        "research": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "outputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence", "deepRead", "readerMap", "research"],
+      "properties": {
+        "evidence": { "$ref": "#/$defs/hash" },
+        "evidenceMigration": { "$ref": "#/$defs/hash" },
+        "claimBundles": { "$ref": "#/$defs/hash" },
+        "themeMap": { "$ref": "#/$defs/hash" },
+        "deepRead": { "$ref": "#/$defs/hash" },
+        "readerMap": { "$ref": "#/$defs/hash" },
+        "research": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["issueRef", "action", "readerBlockRefs", "evidenceRefs", "summary"],
+        "properties": {
+          "issueRef": { "type": "string", "minLength": 1 },
+          "action": { "enum": ["qualifier_patch", "fact_patch", "causal_patch", "counterexample_patch", "new_paragraph", "remove_overclaim", "provenance_fix", "claim_fix"] },
+          "readerBlockRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z0-9-]+$" } },
+          "evidenceRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^E[0-9]{4,}$" } },
+          "summary": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "unresolvedIssueRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "briefInvalidated": { "const": true }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

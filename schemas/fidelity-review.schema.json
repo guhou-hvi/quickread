@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/fidelity-review.schema.json",
+  "title": "QuickRead reader-to-source fidelity review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "role", "reviewerId", "reviewRound", "inputHashes", "entries"],
+  "properties": {
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0"] },
+    "caseId": { "type": "string", "minLength": 1 },
+    "role": { "const": "fidelity" },
+    "reviewerId": { "type": "string", "minLength": 2 },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence", "deepRead", "research"],
+      "properties": {
+        "evidence": { "$ref": "#/$defs/hash" },
+        "deepRead": { "$ref": "#/$defs/hash" },
+        "research": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["readerBlockRef", "verdict", "provenance", "evidenceRefs", "citationRefs", "unsupportedText", "provenanceVerdict", "rationale"],
+        "properties": {
+          "readerBlockRef": { "$ref": "#/$defs/blockRef" },
+          "verdict": { "enum": ["supported", "partial", "unsupported"] },
+          "provenance": { "enum": ["source_fact", "speaker_view", "external", "editorial", "system"] },
+          "evidenceRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/evidenceRef" } },
+          "citationRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/citationRef" } },
+          "unsupportedText": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "provenanceVerdict": { "enum": ["correct", "wrong"] },
+          "severity": { "enum": ["none", "warning", "hard"] },
+          "issueKind": {
+            "enum": [
+              "none",
+              "minor_paraphrase",
+              "minor_context",
+              "minor_bridge",
+              "fabrication",
+              "contradiction",
+              "misattribution",
+              "material_distortion",
+              "invalid_external",
+              "quote_integrity"
+            ]
+          },
+          "rationale": { "type": "string", "minLength": 1 }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "verdict": { "const": "supported" } }, "required": ["verdict", "severity", "issueKind"] },
+            "then": {
+              "properties": {
+                "severity": { "const": "none" },
+                "issueKind": { "const": "none" },
+                "provenanceVerdict": { "const": "correct" },
+                "unsupportedText": { "maxItems": 0 }
+              }
+            }
+          },
+          {
+            "if": { "properties": { "verdict": { "const": "partial" } }, "required": ["verdict", "severity", "issueKind"] },
+            "then": {
+              "properties": {
+                "severity": { "const": "warning" },
+                "issueKind": { "enum": ["minor_paraphrase", "minor_context", "minor_bridge"] },
+                "provenanceVerdict": { "const": "correct" },
+                "unsupportedText": { "minItems": 1 }
+              }
+            }
+          },
+          {
+            "if": { "properties": { "verdict": { "const": "unsupported" } }, "required": ["verdict", "severity", "issueKind"] },
+            "then": {
+              "properties": {
+                "severity": { "enum": ["warning", "hard"] },
+                "issueKind": {
+                  "enum": [
+                    "minor_paraphrase",
+                    "minor_context",
+                    "minor_bridge",
+                    "fabrication",
+                    "contradiction",
+                    "misattribution",
+                    "material_distortion",
+                    "invalid_external",
+                    "quote_integrity"
+                  ]
+                },
+                "unsupportedText": { "minItems": 1 }
+              }
+            }
+          },
+          {
+            "if": { "properties": { "severity": { "const": "none" } }, "required": ["severity", "verdict", "issueKind"] },
+            "then": {
+              "properties": {
+                "verdict": { "const": "supported" },
+                "issueKind": { "const": "none" }
+              }
+            }
+          },
+          {
+            "if": { "properties": { "provenanceVerdict": { "const": "wrong" } }, "required": ["provenanceVerdict", "severity", "issueKind"] },
+            "then": {
+              "properties": {
+                "severity": { "const": "hard" },
+                "issueKind": { "const": "misattribution" }
+              }
+            }
+          },
+          {
+            "if": { "properties": { "severity": { "const": "hard" } }, "required": ["severity", "issueKind"] },
+            "then": {
+              "properties": {
+                "issueKind": { "enum": ["fabrication", "contradiction", "misattribution", "material_distortion", "invalid_external", "quote_integrity"] }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "schemaVersion": { "const": "1.1.0" } }, "required": ["schemaVersion"] },
+      "then": {
+        "properties": {
+          "entries": {
+            "items": { "required": ["severity", "issueKind"] }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidenceRef": { "type": "string", "pattern": "^E[0-9]{4,}$" },
+    "citationRef": { "type": "string", "pattern": "^R[0-9]+$" },
+    "blockRef": { "type": "string", "pattern": "^[a-z0-9-]+$" }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/reader-map.schema.json",
+  "title": "QuickRead author-declared claim-to-reader map",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "entries"],
+  "properties": {
+    "schemaVersion": { "enum": ["2.0.0", "2.1.0"] },
+    "caseId": { "type": "string", "minLength": 1 },
+    "entries": { "type": "array" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "2.0.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/legacyEntry" }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "2.1.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/currentEntry" }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "coverageSpan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["readerBlockRef", "readerTextQuote"],
+      "properties": {
+        "readerBlockRef": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "readerTextQuote": { "type": "string", "minLength": 6 }
+      }
+    },
+    "legacyEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceRef", "importance", "presentation", "coverageSpans"],
+      "properties": {
+        "evidenceRef": { "type": "string", "pattern": "^E[0-9]{4,}$" },
+        "importance": { "enum": ["high", "medium", "low"] },
+        "presentation": { "enum": ["explicit", "synthesized", "evidence_only", "unmapped"] },
+        "coverageSpans": {
+          "type": "array",
+          "maxItems": 2,
+          "items": { "$ref": "#/$defs/coverageSpan" }
+        }
+      }
+    },
+    "currentEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceRef", "importance", "presentation", "coverageSpans"],
+      "properties": {
+        "evidenceRef": { "type": "string", "pattern": "^E[0-9]{4,}$" },
+        "importance": { "enum": ["high", "medium", "low"] },
+        "presentation": { "enum": ["explicit", "synthesized"] },
+        "coverageSpans": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 2,
+          "items": { "$ref": "#/$defs/coverageSpan" }
+        }
+      }
+    }
+  }
+}

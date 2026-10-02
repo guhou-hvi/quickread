@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/case.schema.json",
+  "title": "QuickRead case manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "caseNumber",
+    "title",
+    "shortTitle",
+    "sourceType",
+    "sourceLanguage",
+    "outputLanguage",
+    "participants",
+    "aliases",
+    "tags",
+    "source",
+    "profile",
+    "workflow"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.2.0" },
+    "id": { "type": "string", "pattern": "^qr-[0-9]{4}-[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "caseNumber": { "type": "string", "pattern": "^QR-[0-9]{4}$" },
+    "title": { "type": "string", "minLength": 1 },
+    "shortTitle": { "type": "string", "minLength": 1 },
+    "sourceType": { "enum": ["video", "article"] },
+    "sourceLanguage": { "type": "string", "minLength": 2 },
+    "outputLanguage": { "const": "zh-CN" },
+    "participants": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "aliases": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+      "uniqueItems": true
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "format", "url", "urlStatus", "publisher", "publishedAt", "duration", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "format": { "enum": ["srt", "vtt", "txt", "md"] },
+        "url": { "type": ["string", "null"], "format": "uri" },
+        "urlStatus": { "enum": ["verified", "pending", "missing", "not-applicable"] },
+        "publisher": { "type": ["string", "null"] },
+        "publishedAt": { "type": ["string", "null"], "format": "date" },
+        "duration": { "type": ["string", "null"] },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "urlStatus": { "const": "verified" } } },
+          "then": { "properties": { "url": { "type": "string", "format": "uri" } } }
+        },
+        {
+          "if": { "properties": { "urlStatus": { "enum": ["pending", "missing", "not-applicable"] } } },
+          "then": { "properties": { "url": { "type": "null" } } }
+        }
+      ]
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary", "lenses", "selection", "confidence", "version"],
+      "properties": {
+        "primary": { "type": ["string", "null"], "enum": ["knowledge", "strategy", "narrative", "debate", "general", null] },
+        "lenses": {
+          "type": "array",
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": { "enum": ["research", "product", "startup", "organization", "career", "history", "industry", "policy", "open-source", "education"] }
+        },
+        "selection": { "enum": ["pending", "auto", "confirmed", "manual", "seeded"] },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "version": { "const": "1.1.0" }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "promptVersion", "templateVersion"],
+      "properties": {
+        "version": { "type": "string" },
+        "promptVersion": { "type": "string" },
+        "templateVersion": { "type": "string" }
+      }
+    }
+  }
+}

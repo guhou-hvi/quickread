@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/render-review-v24.schema.json",
+  "title": "QuickRead workflow 2.4 render review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "reviewPolicyVersion", "reviewedAt", "reviewerId", "inputHashes", "status", "hardErrors", "warnings"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "pattern": "^qr-[0-9]{4}-" },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "reviewedAt": { "type": "string", "format": "date" },
+    "reviewerId": { "type": "string", "minLength": 1 },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["html", "desktopPng", "mobilePng", "renderReport"],
+      "properties": {
+        "html": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "desktopPng": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "mobilePng": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "renderReport": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "status": { "enum": ["pass", "fail"] },
+    "hardErrors": { "type": "array", "items": { "type": "string" } },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "summary": { "type": "string" }
+  }
+}

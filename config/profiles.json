@@ -1,0 +1,42 @@
+{
+  "version": "1.1.0",
+  "automaticSelection": {
+    "minimumTopScore": 0.75,
+    "minimumLead": 0.15,
+    "speakerAttributionMinimumConfidence": 0.85
+  },
+  "profiles": {
+    "knowledge": {
+      "label": "知识型",
+      "modules": ["concept", "mechanism", "evidence", "example", "boundary", "counterexample", "open_question"]
+    },
+    "strategy": {
+      "label": "战略型",
+      "modules": ["goal", "constraint", "option", "decision", "execution", "result", "tradeoff", "risk"]
+    },
+    "narrative": {
+      "label": "叙事型",
+      "modules": ["phase", "event", "turning_point", "causal_claim", "consequence", "reflection", "hindsight_risk"]
+    },
+    "debate": {
+      "label": "辩论型",
+      "modules": ["question", "position", "evidence", "rebuttal", "consensus", "disagreement", "unresolved"]
+    },
+    "general": {
+      "label": "综合型",
+      "modules": ["topic", "claim", "evidence", "example", "constraint", "uncertainty"]
+    }
+  },
+  "lenses": [
+    "research",
+    "product",
+    "startup",
+    "organization",
+    "career",
+    "history",
+    "industry",
+    "policy",
+    "open-source",
+    "education"
+  ]
+}

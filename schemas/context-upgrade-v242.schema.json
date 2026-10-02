@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/context-upgrade-v242.schema.json",
+  "title": "QuickRead 2.4.2 context upgrade ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "caseId",
+    "caseNumber",
+    "batchId",
+    "targetVersions",
+    "initialHashes",
+    "completedStages",
+    "lastCompletedStage",
+    "nextAction",
+    "preparedAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "pattern": "^qr-[0-9]{4}-" },
+    "caseNumber": { "enum": ["QR-0001", "QR-0002", "QR-0003", "QR-0004", "QR-0005", "QR-0006", "QR-0007", "QR-0008", "QR-0009", "QR-0010", "QR-0011", "QR-0012", "QR-0013", "QR-0014", "QR-0015", "QR-0016", "QR-0017", "QR-0018", "QR-0019", "QR-0020", "QR-0021", "QR-0022", "QR-0023", "QR-0024", "QR-0025"] },
+    "batchId": { "enum": ["batch-1", "batch-2", "batch-3", "batch-4", "batch-5"] },
+    "targetVersions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workflow", "prompt", "deepReadSchema", "briefSchema", "template", "reviewPolicy"],
+      "properties": {
+        "workflow": { "const": "2.4.2" },
+        "prompt": { "const": "3.4.2" },
+        "deepReadSchema": { "const": "2.5.0" },
+        "briefSchema": { "const": "1.7.0" },
+        "template": { "const": "1.4.4" },
+        "reviewPolicy": { "const": "2.4.2" }
+      }
+    },
+    "initialHashes": { "type": "object" },
+    "completedStages": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["snapshotted", "researched", "context_ready", "reader_bound", "brief_bound", "reviewed", "rendered", "complete"] }
+    },
+    "lastCompletedStage": { "enum": ["snapshotted", "researched", "context_ready", "reader_bound", "brief_bound", "reviewed", "rendered", "complete"] },
+    "nextAction": { "type": "string", "minLength": 1 },
+    "preparedAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  }
+}

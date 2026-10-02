@@ -1,0 +1,623 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/deep-read.schema.json",
+  "title": "QuickRead reader edition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "workflowVersion", "title", "profile", "density", "readerBudget", "sections"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "enum": ["2.0.0", "2.1.0", "2.2.0", "2.3.0", "2.4.0", "2.5.0"] },
+    "caseId": { "type": "string", "minLength": 1 },
+    "workflowVersion": { "enum": ["2.2.0", "2.3.0", "2.4.0", "2.4.1", "2.4.2"] },
+    "title": { "type": "string", "minLength": 1 },
+    "profile": { "$ref": "#/$defs/profile" },
+    "density": { "$ref": "#/$defs/density" },
+    "readerBudget": { "$ref": "#/$defs/readerBudget" },
+    "sections": { "type": "array" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "2.0.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "properties": {
+          "workflowVersion": { "const": "2.2.0" },
+          "sections": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": { "$ref": "#/$defs/legacySection" }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "2.1.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "properties": {
+          "workflowVersion": { "const": "2.3.0" },
+          "sections": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "items": { "$ref": "#/$defs/currentSection" },
+            "allOf": [
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "overview" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              },
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "themes" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "2.2.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "properties": {
+          "workflowVersion": { "const": "2.3.0" },
+          "sections": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "items": { "$ref": "#/$defs/currentV22Section" },
+            "allOf": [
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "overview" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              },
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "themes" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "2.3.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "properties": {
+          "workflowVersion": { "const": "2.4.0" },
+          "sections": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 5,
+            "items": { "$ref": "#/$defs/currentV23Section" },
+            "allOf": [
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "overview" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              },
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "participants" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              },
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "themes" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "2.4.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "properties": {
+          "workflowVersion": { "const": "2.4.1" },
+          "sections": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 5,
+            "items": { "$ref": "#/$defs/currentV24Section" },
+            "allOf": [
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "overview" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              },
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "participants" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              },
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "themes" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "2.5.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "properties": {
+          "workflowVersion": { "const": "2.4.2" },
+          "sections": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 5,
+            "items": { "$ref": "#/$defs/currentV23Section" },
+            "allOf": [
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "overview" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              },
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "participants" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              },
+              {
+                "contains": {
+                  "type": "object",
+                  "properties": { "id": { "const": "themes" } },
+                  "required": ["id"]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary", "lenses", "version"],
+      "properties": {
+        "primary": { "enum": ["knowledge", "strategy", "narrative", "debate", "general"] },
+        "lenses": {
+          "type": "array",
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "version": { "const": "1.1.0" }
+      }
+    },
+    "densityScores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["atomicInformation", "themeDependency", "evidenceRichness", "controversy", "uniqueness"],
+      "properties": {
+        "atomicInformation": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "themeDependency": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "evidenceRichness": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "controversy": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "uniqueness": { "type": "integer", "minimum": 0, "maximum": 4 }
+      }
+    },
+    "density": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scores", "total"],
+      "properties": {
+        "scores": { "$ref": "#/$defs/densityScores" },
+        "total": { "type": "integer", "minimum": 0, "maximum": 20 }
+      }
+    },
+    "readerBudget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recommendedCharacters", "minimumGuideline", "maximumGuideline", "softCharacterCap"],
+      "properties": {
+        "recommendedCharacters": { "type": "integer", "minimum": 0 },
+        "minimumGuideline": { "type": "integer", "minimum": 0 },
+        "maximumGuideline": { "type": "integer", "minimum": 0 },
+        "softCharacterCap": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string" }
+    },
+    "paragraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role", "text"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "role": { "enum": ["thesis", "explanation", "transition"] },
+        "text": { "type": "string", "minLength": 1 },
+        "evidenceRefs": { "$ref": "#/$defs/refs" },
+        "citationRefs": { "$ref": "#/$defs/refs" },
+        "contextRefs": { "$ref": "#/$defs/refs" },
+        "contextPreviewRefs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "listItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "text": { "type": "string", "minLength": 1 },
+        "evidenceRefs": { "$ref": "#/$defs/refs" },
+        "citationRefs": { "$ref": "#/$defs/refs" },
+        "contextRefs": { "$ref": "#/$defs/refs" },
+        "contextPreviewRefs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "timelineItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "anchor", "title", "evidenceRefs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "anchor": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "evidenceRefs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "proseGroupBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "provenance", "paragraphs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "type": { "const": "prose_group" },
+        "provenance": { "enum": ["source_fact", "speaker_view", "external", "system"] },
+        "paragraphs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/paragraph" } }
+      }
+    },
+    "listBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "provenance", "items"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "type": { "const": "structured_list" },
+        "provenance": { "enum": ["source_fact", "speaker_view", "external", "system"] },
+        "items": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/listItem" } }
+      }
+    },
+    "legacyQuote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "provenance", "text", "evidenceRefs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "type": { "const": "quote" },
+        "provenance": { "enum": ["source_fact", "speaker_view"] },
+        "text": { "type": "string", "minLength": 6 },
+        "attribution": { "type": "string" },
+        "evidenceRefs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "controlledQuote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "provenance", "text", "attribution", "quoteMode", "evidenceRefs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "type": { "const": "quote" },
+        "provenance": { "enum": ["source_fact", "speaker_view"] },
+        "text": { "type": "string", "minLength": 6 },
+        "attribution": { "type": "string", "minLength": 1 },
+        "quoteMode": { "enum": ["verbatim", "spoken_cleanup"] },
+        "sourceLocator": { "type": "string", "minLength": 1 },
+        "sourceText": { "type": "string", "minLength": 6 },
+        "evidenceRefs": { "$ref": "#/$defs/refs" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "quoteMode": { "const": "spoken_cleanup" } },
+            "required": ["quoteMode"]
+          },
+          "then": { "required": ["sourceLocator", "sourceText"] }
+        }
+      ]
+    },
+    "timelineBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "provenance", "items"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "type": { "const": "timeline" },
+        "provenance": { "const": "system" },
+        "items": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/timelineItem" } }
+      }
+    },
+    "editorNote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "provenance", "intent", "title", "text"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "type": { "const": "editor_note" },
+        "provenance": { "const": "editorial" },
+        "intent": { "enum": ["summary", "commentary", "critique", "caution"] },
+        "title": { "type": "string", "minLength": 1 },
+        "text": { "type": "string", "minLength": 1 },
+        "evidenceRefs": { "$ref": "#/$defs/refs" },
+        "citationRefs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "participantGuideBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "provenance", "guideRef"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "type": { "const": "participant_guide" },
+        "provenance": { "const": "external" },
+        "guideRef": { "const": "work/participant-guide.json" }
+      }
+    },
+    "contextGuideBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "provenance", "guideRef", "entryRefs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "type": { "const": "context_guide" },
+        "provenance": { "const": "system" },
+        "guideRef": { "const": "work/context-guide.json" },
+        "entryRefs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "legacyProseGroup": {
+      "allOf": [
+        { "$ref": "#/$defs/proseGroupBase" },
+        { "properties": { "paragraphs": { "maxItems": 5 } } }
+      ]
+    },
+    "legacyList": {
+      "allOf": [
+        { "$ref": "#/$defs/listBase" },
+        { "properties": { "items": { "maxItems": 7 } } }
+      ]
+    },
+    "legacyTimeline": {
+      "allOf": [
+        { "$ref": "#/$defs/timelineBase" },
+        { "properties": { "items": { "minItems": 8, "maxItems": 20 } } }
+      ]
+    },
+    "legacyBlock": {
+      "oneOf": [
+        { "$ref": "#/$defs/legacyProseGroup" },
+        { "$ref": "#/$defs/legacyList" },
+        { "$ref": "#/$defs/legacyQuote" },
+        { "$ref": "#/$defs/legacyTimeline" },
+        { "$ref": "#/$defs/editorNote" }
+      ]
+    },
+    "currentBlock": {
+      "oneOf": [
+        { "$ref": "#/$defs/proseGroupBase" },
+        { "$ref": "#/$defs/listBase" },
+        { "$ref": "#/$defs/legacyQuote" },
+        { "$ref": "#/$defs/timelineBase" }
+      ]
+    },
+    "currentV22Block": {
+      "oneOf": [
+        { "$ref": "#/$defs/proseGroupBase" },
+        { "$ref": "#/$defs/listBase" },
+        { "$ref": "#/$defs/controlledQuote" },
+        { "$ref": "#/$defs/timelineBase" }
+      ]
+    },
+    "currentV23Block": {
+      "oneOf": [
+        { "$ref": "#/$defs/proseGroupBase" },
+        { "$ref": "#/$defs/listBase" },
+        { "$ref": "#/$defs/controlledQuote" },
+        { "$ref": "#/$defs/timelineBase" },
+        { "$ref": "#/$defs/participantGuideBlock" }
+      ]
+    },
+    "currentV24Block": {
+      "oneOf": [
+        { "$ref": "#/$defs/proseGroupBase" },
+        { "$ref": "#/$defs/listBase" },
+        { "$ref": "#/$defs/controlledQuote" },
+        { "$ref": "#/$defs/timelineBase" },
+        { "$ref": "#/$defs/participantGuideBlock" },
+        { "$ref": "#/$defs/contextGuideBlock" }
+      ]
+    },
+    "legacyModule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "profileModule", "blocks"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "title": { "type": ["string", "null"] },
+        "profileModule": { "type": "string", "minLength": 1 },
+        "blocks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/legacyBlock" } }
+      }
+    },
+    "currentModule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "profileModule", "blocks"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "title": { "type": ["string", "null"] },
+        "profileModule": { "type": "string", "minLength": 1 },
+        "blocks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/currentBlock" } }
+      }
+    },
+    "currentV22Module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "profileModule", "blocks"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "title": { "type": ["string", "null"] },
+        "profileModule": { "type": "string", "minLength": 1 },
+        "blocks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/currentV22Block" } }
+      }
+    },
+    "currentV23Module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "profileModule", "blocks"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "title": { "type": ["string", "null"] },
+        "profileModule": { "type": "string", "minLength": 1 },
+        "blocks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/currentV23Block" } }
+      }
+    },
+    "currentV24Module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "profileModule", "blocks"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "title": { "type": ["string", "null"] },
+        "profileModule": { "type": "string", "minLength": 1 },
+        "blocks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/currentV24Block" } }
+      }
+    },
+    "legacySection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "number", "title", "modules"],
+      "properties": {
+        "id": { "enum": ["overview", "themes", "navigation", "verification"] },
+        "number": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "title": { "type": "string", "minLength": 1 },
+        "modules": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/legacyModule" } }
+      }
+    },
+    "currentSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "number", "title", "modules"],
+      "properties": {
+        "id": { "enum": ["overview", "themes", "navigation", "verification"] },
+        "number": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "title": { "type": "string", "minLength": 1 },
+        "modules": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/currentModule" } }
+      }
+    },
+    "currentV22Section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "number", "title", "modules"],
+      "properties": {
+        "id": { "enum": ["overview", "themes", "navigation", "verification"] },
+        "number": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "title": { "type": "string", "minLength": 1 },
+        "modules": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/currentV22Module" } }
+      }
+    },
+    "currentV23Section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "number", "title", "modules"],
+      "properties": {
+        "id": { "enum": ["overview", "participants", "themes", "navigation", "verification"] },
+        "number": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "title": { "type": "string", "minLength": 1 },
+        "modules": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/currentV23Module" } }
+      }
+    },
+    "currentV24Section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "number", "title", "modules"],
+      "properties": {
+        "id": { "enum": ["overview", "participants", "themes", "navigation", "verification"] },
+        "number": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "title": { "type": "string", "minLength": 1 },
+        "modules": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/currentV24Module" } }
+      }
+    }
+  }
+}

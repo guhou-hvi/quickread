@@ -1,0 +1,13 @@
+node_modules/
+.cache/
+*.log
+tmp/
+test-results/
+playwright-report/
+.env
+.env.*
+inbox/*
+!inbox/README.md
+cases/*
+!cases/README.md
+!cases/index.html

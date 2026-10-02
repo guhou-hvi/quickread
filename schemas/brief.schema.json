@@ -1,0 +1,486 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/brief.schema.json",
+  "title": "QuickRead visual brief",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "caseId",
+    "workflowVersion",
+    "templateVersion",
+    "brand",
+    "title",
+    "subtitle",
+    "summary",
+    "sourceMeta",
+    "generatedAt",
+    "readingMinutes",
+    "profile",
+    "density",
+    "sections",
+    "citations"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "enum": ["1.3.0", "1.4.0", "1.5.0", "1.6.0", "1.7.0"] },
+    "caseId": { "type": "string" },
+    "workflowVersion": { "type": "string" },
+    "templateVersion": { "type": "string" },
+    "brand": { "const": "QuickRead Longform" },
+    "title": { "type": "string", "minLength": 1 },
+    "subtitle": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1 },
+    "sourceMeta": {
+      "type": "object",
+      "required": ["type", "label"],
+      "properties": {
+        "type": { "enum": ["video", "article"] },
+        "label": { "type": "string" },
+        "duration": { "type": ["string", "null"] },
+        "url": { "type": ["string", "null"] }
+      }
+    },
+    "generatedAt": { "type": "string", "format": "date" },
+    "readingMinutes": { "type": "integer", "minimum": 1, "maximum": 30 },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary", "lenses", "version"],
+      "properties": {
+        "primary": { "enum": ["knowledge", "strategy", "narrative", "debate", "general"] },
+        "lenses": { "type": "array", "maxItems": 3, "uniqueItems": true, "items": { "type": "string" } },
+        "version": { "const": "1.1.0" }
+      }
+    },
+    "density": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scores", "total", "targetCharacters"],
+      "properties": {
+        "scores": { "$ref": "#/$defs/densityScores" },
+        "total": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "targetCharacters": { "type": "integer", "minimum": 3000, "maximum": 8000 }
+      }
+    },
+    "participantGuide": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "provenance", "guideRef"],
+      "properties": {
+        "type": { "const": "participant_guide" },
+        "provenance": { "const": "external" },
+        "guideRef": { "const": "work/participant-guide.json" }
+      }
+    },
+    "contextGuide": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "provenance", "guideRef", "entryRefs"],
+          "properties": {
+            "type": { "const": "context_guide" },
+            "provenance": { "const": "system" },
+            "guideRef": { "const": "work/context-guide.json" },
+            "entryRefs": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "provenance", "guideRef", "entryRefs", "placement"],
+          "properties": {
+            "type": { "const": "context_guide" },
+            "provenance": { "const": "system" },
+            "guideRef": { "const": "work/context-guide.json" },
+            "entryRefs": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "placement": { "const": "inline_first_use" }
+          }
+        }
+      ]
+    },
+    "sections": { "type": "array" },
+    "citations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/citation" }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "1.3.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "properties": {
+          "sections": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 8,
+            "items": { "$ref": "#/$defs/section" }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "1.4.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "properties": {
+          "sections": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 8,
+            "items": { "$ref": "#/$defs/controlledSection" }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "1.5.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "required": ["participantGuide"],
+        "properties": {
+          "workflowVersion": { "const": "2.4.0" },
+          "templateVersion": { "const": "1.4.2" },
+          "sections": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 8,
+            "items": { "$ref": "#/$defs/controlledSection" }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "1.6.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "required": ["participantGuide"],
+        "properties": {
+          "workflowVersion": { "const": "2.4.1" },
+          "templateVersion": { "const": "1.4.3" },
+          "sections": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 8,
+            "items": { "$ref": "#/$defs/controlledSection" }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "1.7.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "properties": {
+          "workflowVersion": { "const": "2.4.2" },
+          "templateVersion": { "const": "1.4.4" },
+          "contextGuide": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "provenance", "guideRef", "entryRefs", "placement"],
+            "properties": {
+              "type": { "const": "context_guide" },
+              "provenance": { "const": "system" },
+              "guideRef": { "const": "work/context-guide.json" },
+              "entryRefs": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "type": "string", "minLength": 1 }
+              },
+              "placement": { "const": "inline_first_use" }
+            }
+          },
+          "sections": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 8,
+            "items": { "$ref": "#/$defs/controlledSection" }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "densityScores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["atomicInformation", "themeDependency", "evidenceRichness", "controversy", "uniqueness"],
+      "properties": {
+        "atomicInformation": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "themeDependency": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "evidenceRichness": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "controversy": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "uniqueness": { "type": "integer", "minimum": 0, "maximum": 4 }
+      }
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "number", "title", "lead", "timeAnchors", "blocks"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "number": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "lead": { "type": "string", "minLength": 1 },
+        "contextRefs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "contextPreviewRefs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "timeAnchors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/timeAnchor" }
+        },
+        "blocks": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/block" }
+        }
+      }
+    },
+    "controlledSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "number", "title", "lead", "timeAnchors", "blocks"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "number": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "lead": { "type": "string", "minLength": 1 },
+        "contextRefs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "contextPreviewRefs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "timeAnchors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/timeAnchor" }
+        },
+        "blocks": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/controlledBlock" }
+        }
+      }
+    },
+    "timeAnchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "evidenceRefs"],
+      "properties": {
+        "label": { "type": "string" },
+        "href": { "type": ["string", "null"] },
+        "evidenceRefs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      }
+    },
+    "block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "provenance"],
+      "properties": {
+        "type": {
+          "enum": ["paragraph", "bullets", "quote", "callout", "stats", "comparison", "steps", "editor_note"]
+        },
+        "provenance": {
+          "enum": ["source_fact", "speaker_view", "external", "editorial"]
+        },
+        "intent": {
+          "enum": ["summary", "commentary", "critique", "caution"]
+        },
+        "label": { "type": "string" },
+        "title": { "type": "string" },
+        "text": { "type": "string" },
+        "attribution": { "type": "string" },
+        "quoteMode": { "enum": ["verbatim", "spoken_cleanup"] },
+        "sourceLocator": { "type": "string", "minLength": 1 },
+        "sourceText": { "type": "string", "minLength": 6 },
+        "tone": { "enum": ["plain", "blue", "yellow", "orange", "green"] },
+        "evidenceRefs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "citationRefs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "contextRefs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "contextPreviewRefs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["text"],
+            "properties": {
+              "text": { "type": "string" },
+              "value": { "type": "string" },
+              "label": { "type": "string" },
+              "evidenceRefs": { "type": "array", "items": { "type": "string" } },
+              "citationRefs": { "type": "array", "items": { "type": "string" } },
+              "contextRefs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "contextPreviewRefs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+            }
+          }
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["title", "items"],
+            "properties": {
+              "title": { "type": "string" },
+              "tone": { "enum": ["blue", "yellow", "orange", "green", "plain"] },
+              "contextRefs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "contextPreviewRefs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "items": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "provenance": { "const": "editorial" } },
+            "required": ["provenance"]
+          },
+          "then": {
+            "required": ["intent", "title", "text"],
+            "properties": { "type": { "const": "editor_note" } },
+            "not": {
+              "anyOf": [
+                { "required": ["label"] },
+                { "required": ["attribution"] },
+                { "required": ["tone"] },
+                { "required": ["items"] },
+                { "required": ["columns"] }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "editor_note" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": { "provenance": { "const": "editorial" } }
+          }
+        },
+        {
+          "if": { "required": ["intent"] },
+          "then": {
+            "properties": { "type": { "const": "editor_note" } }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": { "const": "editor_note" },
+              "intent": { "const": "summary" }
+            },
+            "required": ["type", "intent"]
+          },
+          "then": {
+            "required": ["evidenceRefs"],
+            "properties": {
+              "evidenceRefs": { "minItems": 1 }
+            }
+          }
+        }
+      ]
+    },
+    "controlledBlock": {
+      "allOf": [
+        { "$ref": "#/$defs/block" },
+        {
+          "if": {
+            "properties": { "type": { "const": "quote" } },
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["text", "attribution", "quoteMode"],
+            "allOf": [
+              {
+                "if": {
+                  "properties": { "quoteMode": { "const": "spoken_cleanup" } },
+                  "required": ["quoteMode"]
+                },
+                "then": { "required": ["sourceLocator", "sourceText"] }
+              }
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                { "required": ["quoteMode"] },
+                { "required": ["sourceLocator"] },
+                { "required": ["sourceText"] }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "citation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "publisher", "url", "accessedAt"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^R[0-9]+$" },
+        "title": { "type": "string" },
+        "publisher": { "type": "string" },
+        "url": { "type": "string", "format": "uri" },
+        "accessedAt": { "type": "string", "format": "date" },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+QuickRead Personal Noncommercial Source License — 0.1
+Copyright (c) 2026 guhou-hvi
+
+1. Covered work
+This license covers only QuickRead code, prompts, templates and documentation
+identified as the project author's work. Third-party software, fonts, source
+materials and example excerpts retain their respective rights and licenses.
+The licensor grants only rights that the licensor is entitled to grant.
+
+2. Personal noncommercial use
+An individual may download, keep personal copies, run and privately modify the
+covered work solely for that individual's noncommercial study, experimentation
+or personal reading. Retain this license and all copyright and attribution
+notices. Do not misrepresent the original work as authored by someone else.
+
+3. Uses requiring separate permission
+This license does not authorize use by or on behalf of an organization,
+including an employer, client, institution or other entity. Commercial use,
+selling or licensing the work, paid processing, paid hosted services, and use
+in a business or commercial product require the licensor's prior written
+permission. Redistributing the work or modified versions outside the platform
+permissions in section 4 also requires prior written permission. Charging no
+fee does not by itself establish a permitted personal noncommercial purpose.
+
+4. Hosting-platform permissions and applicable law
+Nothing here withdraws permissions necessarily granted under the applicable
+hosting platform's terms, including viewing and forking a public repository
+within GitHub. Such platform permissions do not by themselves grant additional
+commercial or organizational-use rights under this license. This license does
+not restrict rights or exceptions that applicable law makes non-waivable.
+
+5. Separate content rights
+This license does not license third-party inputs or outputs derived from them,
+and does not grant permission to publish an interview, transcript, likeness,
+logo or other third-party material. Lawfully supplied original content remains
+subject to its own rights. No endorsement by a featured person is implied.
+
+6. Attribution and modification
+Keep the project name, author attribution and copyright/license notices with
+the covered work. Mark your private modifications as modifications; do not
+imply that the original author approved them. No trademark rights are granted.
+
+7. Termination
+The permissions above end if you use the covered work outside their scope or
+breach their conditions. Stop the unpermitted use; further permission requires
+the licensor's written agreement. Statutory rights remain unaffected.
+
+8. No warranty
+To the extent permitted by applicable law, the covered work is provided as is,
+without warranty. The licensor is not liable for damages arising from its use
+to the extent such exclusion is lawful. Users are responsible for reviewing
+generated content and for the rights in materials they supply or distribute.
+
+9. Requests
+The official repository is https://github.com/guhou-hvi/quickread.
+Submit feedback and requests for additional permission to
+https://github.com/guhou-hvi/quickread/issues. Submitting a request,
+silence, a star, a fork or an acknowledgement does not constitute permission.
+Additional permission requires the licensor's explicit written agreement to
+the requested use. This license grants no sublicense right.
+
+The English text is the operative license; docs/license-guide.md summarizes it
+in Chinese. This is a source-available personal-use license, not an OSI-approved
+open-source license. The author's own use is not restricted by this grant.

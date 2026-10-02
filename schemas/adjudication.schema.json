@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/adjudication.schema.json",
+  "title": "QuickRead coverage adjudication",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "role", "reviewerId", "reviewRound", "inputHashes", "entries"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "role": { "const": "adjudicator" },
+    "reviewerId": { "type": "string", "minLength": 2 },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence", "deepRead", "coverageA", "coverageB"],
+      "properties": {
+        "evidence": { "$ref": "#/$defs/hash" },
+        "deepRead": { "$ref": "#/$defs/hash" },
+        "coverageA": { "$ref": "#/$defs/hash" },
+        "coverageB": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidenceRef", "triggers", "verdict", "confidence", "issueType", "readerBlockRefs", "verifiedQuotes", "rationale"],
+        "properties": {
+          "evidenceRef": { "$ref": "#/$defs/evidenceRef" },
+          "triggers": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "enum": ["verdict_conflict", "block_conflict", "dense_block", "low_confidence", "contradiction", "issue_type"] }
+          },
+          "verdict": { "enum": ["covered", "partial", "missing", "contradicted", "unreviewable"] },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "issueType": { "$ref": "#/$defs/issueType" },
+          "readerBlockRefs": { "type": "array", "maxItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/blockRef" } },
+          "verifiedQuotes": { "type": "array", "maxItems": 2, "items": { "$ref": "#/$defs/verifiedQuote" } },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidenceRef": { "type": "string", "pattern": "^E[0-9]{4,}$" },
+    "blockRef": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "issueType": { "enum": ["none", "importance_misclassified", "theme_misclassified", "provenance_conflict", "semantic_conflict", "insufficient_context"] },
+    "verifiedQuote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["readerBlockRef", "readerTextQuote"],
+      "properties": {
+        "readerBlockRef": { "$ref": "#/$defs/blockRef" },
+        "readerTextQuote": { "type": "string", "minLength": 6 }
+      }
+    }
+  }
+}

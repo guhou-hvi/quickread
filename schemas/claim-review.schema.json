@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/claim-review.schema.json",
+  "title": "QuickRead atomic claim audit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "role", "reviewerId", "reviewRound", "inputHashes", "entries"],
+  "allOf": [
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "1.0.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            { "required": ["auditMode"] },
+            { "required": ["scope"] }
+          ]
+        }
+      },
+      "else": {
+        "required": ["auditMode", "scope"],
+        "properties": {
+          "entries": {
+            "items": {
+              "required": ["findingCodes"],
+              "allOf": [
+                {
+                  "if": { "properties": { "verdict": { "const": "pass" } }, "required": ["verdict"] },
+                  "then": { "properties": { "findingCodes": { "maxItems": 0 } } },
+                  "else": { "properties": { "findingCodes": { "minItems": 1 } } }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schemaVersion": { "const": "1.1.0" },
+          "auditMode": { "const": "targeted" }
+        },
+        "required": ["schemaVersion", "auditMode"]
+      },
+      "then": {
+        "properties": {
+          "inputHashes": { "required": ["primaryClaimReview", "targetSet"] }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schemaVersion": { "const": "1.1.0" },
+          "auditMode": { "const": "full" }
+        },
+        "required": ["schemaVersion", "auditMode"]
+      },
+      "then": {
+        "properties": {
+          "inputHashes": {
+            "not": {
+              "anyOf": [
+                { "required": ["primaryClaimReview"] },
+                { "required": ["targetSet"] }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0"] },
+    "caseId": { "type": "string", "minLength": 1 },
+    "role": { "const": "claim_auditor" },
+    "reviewerId": { "type": "string", "minLength": 2 },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "auditMode": { "enum": ["full", "targeted"] },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceRefs"],
+      "properties": {
+        "evidenceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/evidenceRef" }
+        }
+      }
+    },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["segments", "evidence"],
+      "properties": {
+        "segments": { "$ref": "#/$defs/hash" },
+        "evidence": { "$ref": "#/$defs/hash" },
+        "primaryClaimReview": { "$ref": "#/$defs/hash" },
+        "targetSet": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidenceRef", "verdict", "atomicity", "support", "importance", "theme", "speaker", "issues", "rationale"],
+        "allOf": [
+          {
+            "if": { "properties": { "verdict": { "const": "merge" } }, "required": ["verdict"] },
+            "then": { "required": ["mergeWithRefs"], "properties": { "mergeWithRefs": { "minItems": 1, "maxItems": 1 } } },
+            "else": { "properties": { "mergeWithRefs": { "maxItems": 0 } } }
+          },
+          {
+            "if": { "properties": { "verdict": { "const": "split" } }, "required": ["verdict"] },
+            "then": { "required": ["replacementStatements"], "properties": { "replacementStatements": { "minItems": 2 } } }
+          },
+          {
+            "if": { "properties": { "verdict": { "const": "pass" } }, "required": ["verdict"] },
+            "then": { "properties": { "replacementStatements": { "maxItems": 0 } } }
+          }
+        ],
+        "properties": {
+          "evidenceRef": { "$ref": "#/$defs/evidenceRef" },
+          "verdict": { "enum": ["pass", "revise", "split", "merge", "remove"] },
+          "atomicity": { "enum": ["pass", "fail"] },
+          "support": { "enum": ["supported", "partial", "unsupported"] },
+          "importance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["verdict", "proposed"],
+            "properties": {
+              "verdict": { "enum": ["confirmed", "change"] },
+              "proposed": { "type": ["string", "null"], "enum": ["high", "medium", "low", null] }
+            }
+          },
+          "theme": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["verdict", "proposedThemeId"],
+            "properties": {
+              "verdict": { "enum": ["confirmed", "change"] },
+              "proposedThemeId": { "type": ["string", "null"], "pattern": "^T[0-9]{3,}$" }
+            }
+          },
+          "speaker": { "enum": ["confirmed", "unknown_safe", "change"] },
+          "mergeWithRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/evidenceRef" } },
+          "replacementStatements": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "findingCodes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/findingCode" }
+          },
+          "issues": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidenceRef": { "type": "string", "pattern": "^E[0-9]{4,}$" },
+    "findingCode": {
+      "enum": [
+        "compound_claim",
+        "support_gap",
+        "overstatement",
+        "importance_misclassified",
+        "theme_misclassified",
+        "speaker_attribution_unsafe",
+        "duplicate_claim",
+        "empty_semantics",
+        "other_semantic",
+        "missing_support_quote"
+      ]
+    }
+  }
+}

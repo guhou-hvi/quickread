@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/claim-review-policy-disposition.schema.json",
+  "title": "QuickRead user-approved nonblocking claim disposition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "reviewPolicyVersion", "authority", "approvedAt", "inputHashes", "entries"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "authority": { "const": "user_approved_nonblocking_warning" },
+    "approvedAt": { "type": "string", "format": "date" },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["changeSet", "report", "currentEvidence", "segments"],
+      "properties": {
+        "changeSet": { "$ref": "#/$defs/hash" },
+        "report": { "$ref": "#/$defs/hash" },
+        "currentEvidence": { "$ref": "#/$defs/hash" },
+        "segments": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidenceRef", "findingHash", "decision", "basis", "deliveryConstraint", "safeguards", "rationale"],
+        "properties": {
+          "evidenceRef": { "$ref": "#/$defs/evidenceRef" },
+          "findingHash": { "$ref": "#/$defs/hash" },
+          "decision": { "const": "warning" },
+          "basis": { "const": "non_core_asr_ambiguity" },
+          "deliveryConstraint": { "const": "exclude_from_new_reader" },
+          "safeguards": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["noFabrication", "noMisattribution", "noContradiction", "noInvalidCitation", "noMaterialSemanticChange", "coreUnderstandingUnaffected"],
+            "properties": {
+              "noFabrication": { "const": true },
+              "noMisattribution": { "const": true },
+              "noContradiction": { "const": true },
+              "noInvalidCitation": { "const": true },
+              "noMaterialSemanticChange": { "const": true },
+              "coreUnderstandingUnaffected": { "const": true }
+            }
+          },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidenceRef": { "type": "string", "pattern": "^E[0-9]{4,}$" }
+  }
+}

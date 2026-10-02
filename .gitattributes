@@ -1,0 +1,8 @@
+# Release manifests verify exact bytes on every platform.
+# Preserve source line endings when committing and checking out this snapshot.
+* -text
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/claim-bundle.schema.json",
+  "title": "QuickRead reader synthesis claim bundles",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "inputHashes", "bundles"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence", "claimReview"],
+      "properties": {
+        "evidence": { "$ref": "#/$defs/hash" },
+        "claimReview": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "bundles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "themeId", "order", "title", "narrativePurpose", "readerBlockRef", "requiredReaderRefs", "optionalReaderRefs", "evidenceOnlyRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^CB[0-9]{3,}$" },
+          "themeId": { "type": "string", "pattern": "^T[0-9]{3,}$" },
+          "order": { "type": "integer", "minimum": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "narrativePurpose": { "type": "string", "minLength": 1 },
+          "readerBlockRef": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "requiredReaderRefs": { "$ref": "#/$defs/evidenceRefs" },
+          "optionalReaderRefs": { "$ref": "#/$defs/evidenceRefs" },
+          "evidenceOnlyRefs": { "$ref": "#/$defs/evidenceRefs" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidenceRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^E[0-9]{4,}$" }
+    }
+  }
+}

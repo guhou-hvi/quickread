@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/migration-v24.schema.json",
+  "title": "QuickRead workflow 2.4 migration ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "caseNumber", "fromWorkflowVersion", "targetVersions", "migrationClass", "batchId", "stage", "lastCompletedStage", "createdAt", "updatedAt", "initialHashes", "archive", "completedStages", "pendingReviews", "nextAction", "errors"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "pattern": "^qr-[0-9]{4}-" },
+    "caseNumber": { "type": "string", "pattern": "^QR-[0-9]{4}$" },
+    "fromWorkflowVersion": { "type": "string", "minLength": 1 },
+    "targetVersions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workflow", "prompt", "template", "deepReadSchema", "briefSchema"],
+      "properties": {
+        "workflow": { "const": "2.4.0" },
+        "prompt": { "const": "3.4.0" },
+        "template": { "const": "1.4.2" },
+        "deepReadSchema": { "const": "2.3.0" },
+        "briefSchema": { "const": "1.5.0" }
+      }
+    },
+    "migrationClass": { "enum": ["light_reader_upgrade", "reusable_evidence", "legacy_full"] },
+    "batchId": { "enum": ["qr0017", "pilots", "legacy-a", "legacy-b", "legacy-c"] },
+    "stage": { "enum": ["archived", "evidence_ready", "evidence_reviewed", "reader_ready", "reader_reviewed", "delivered", "failed"] },
+    "lastCompletedStage": { "enum": ["archived", "evidence_ready", "evidence_reviewed", "reader_ready", "reader_reviewed", "delivered"] },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "initialHashes": { "$ref": "#/$defs/snapshotHashes" },
+    "archive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "manifestSha256"],
+      "properties": {
+        "path": { "type": "string", "pattern": "^legacy/workflow-" },
+        "manifestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "completedStages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stage", "completedAt", "snapshotHashes"],
+        "properties": {
+          "stage": { "enum": ["archived", "evidence_ready", "evidence_reviewed", "reader_ready", "reader_reviewed", "delivered"] },
+          "completedAt": { "type": "string", "format": "date-time" },
+          "snapshotHashes": { "$ref": "#/$defs/snapshotHashes" }
+        }
+      }
+    },
+    "pendingReviews": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["claim_auditor", "source_scout", "fidelity", "reader_advocate", "external_citation", "render"] }
+    },
+    "nextAction": { "type": "string", "minLength": 1 },
+    "errors": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+  },
+  "$defs": {
+    "snapshotHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "normalizedSource", "segments", "evidence"],
+      "properties": {
+        "source": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "normalizedSource": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+        "segments": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+        "evidence": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/reader-review-v240-delta-manifest.schema.json",
+  "title": "QuickRead 2.4 targeted reader-review delta manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "caseId",
+    "reviewPolicyVersion",
+    "reviewRound",
+    "reviewMode",
+    "baseRound",
+    "gatePolicy",
+    "base",
+    "inputHashes",
+    "changeSet",
+    "readerSnapshot",
+    "rerunRoles",
+    "inheritedRoles",
+    "packets",
+    "inheritedReports",
+    "humanReviewRequired"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "reviewRound": { "type": "integer", "minimum": 2 },
+    "reviewMode": { "const": "targeted_delta" },
+    "baseRound": { "type": "integer", "minimum": 1 },
+    "gatePolicy": { "const": "concrete_hard_errors" },
+    "base": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifestHash", "consensusHash", "inputHashes"],
+      "properties": {
+        "manifestHash": { "$ref": "#/$defs/hash" },
+        "consensusHash": { "$ref": "#/$defs/hash" },
+        "inputHashes": { "$ref": "reader-review-v240-manifest.schema.json#/$defs/inputHashes" }
+      }
+    },
+    "inputHashes": { "$ref": "reader-review-v240-manifest.schema.json#/$defs/inputHashes" },
+    "changeSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["changedReaderBlocks", "strippedMarkdownChanged", "readerMapChanged", "deepReadChanged", "readerMarkdownChanged"],
+      "properties": {
+        "changedReaderBlocks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "kinds", "beforeHash", "afterHash"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "kinds": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "enum": ["text", "evidence_refs", "citation_refs", "provenance"] }
+              },
+              "beforeHash": { "$ref": "#/$defs/hash" },
+              "afterHash": { "$ref": "#/$defs/hash" }
+            }
+          }
+        },
+        "strippedMarkdownChanged": { "type": "boolean" },
+        "readerMapChanged": { "type": "boolean" },
+        "deepReadChanged": { "const": true },
+        "readerMarkdownChanged": { "type": "boolean" }
+      }
+    },
+    "readerSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "hash"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "hash": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "rerunRoles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["fidelity", "reader_advocate"] }
+    },
+    "inheritedRoles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["source_scout", "fidelity", "reader_advocate"] }
+    },
+    "packets": { "type": "array", "minItems": 1, "maxItems": 2, "items": { "type": "object" } },
+    "inheritedReports": { "type": "array", "minItems": 1, "maxItems": 2, "items": { "type": "object" } },
+    "humanReviewRequired": { "const": true }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

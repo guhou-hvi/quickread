@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/reader-review-v240-consensus.schema.json",
+  "title": "QuickRead 2.4 lightweight reader review consensus",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "caseId", "reviewPolicyVersion", "reviewRound", "status", "gatePolicy", "inputHashes", "reviewerIds", "hardErrors", "warnings", "diagnostics", "humanReviewRequired"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["pass", "pass_with_warnings", "blocked"] },
+    "gatePolicy": { "const": "concrete_hard_errors" },
+    "inputHashes": { "$ref": "reader-review-v240-manifest.schema.json#/$defs/inputHashes" },
+    "reviewerIds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_scout", "fidelity", "reader_advocate"],
+      "properties": {
+        "source_scout": { "type": "string" },
+        "fidelity": { "type": "string" },
+        "reader_advocate": { "type": "string" }
+      }
+    },
+    "hardErrors": { "type": "array", "items": { "type": "object" } },
+    "warnings": { "type": "array", "items": { "type": "object" } },
+    "diagnostics": { "type": "array", "items": { "type": "object" } },
+    "humanReviewRequired": { "const": true }
+  }
+}

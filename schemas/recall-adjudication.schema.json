@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/recall-adjudication.schema.json",
+  "title": "QuickRead targeted Recall adjudication",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "workflowVersion", "caseId", "role", "reviewerId", "reviewRound", "inputHashes", "targetRefs", "entries"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "workflowVersion": { "const": "2.2.2" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "role": { "const": "recall_adjudicator" },
+    "reviewerId": { "type": "string", "minLength": 2 },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["segments", "evidence", "blindCandidates", "blindAlignment", "targetSet"],
+      "properties": {
+        "segments": { "$ref": "#/$defs/hash" },
+        "evidence": { "$ref": "#/$defs/hash" },
+        "blindCandidates": { "$ref": "#/$defs/hash" },
+        "blindAlignment": { "$ref": "#/$defs/hash" },
+        "targetSet": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "targetRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/candidateRef" } },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["candidateRef", "triggers", "candidateValidity", "calibratedImportance", "relation", "materialFacet", "themeId", "matchedEvidenceRefs", "missingFacets", "rationale"],
+        "properties": {
+          "candidateRef": { "$ref": "#/$defs/candidateRef" },
+          "triggers": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["high_exclusion", "high_downgrade", "high_nonmaterial_partial", "high_boundary", "medium_boundary"] } },
+          "candidateValidity": { "enum": ["valid", "question", "navigation", "asr_fragment", "incomplete", "subsumed"] },
+          "calibratedImportance": { "enum": ["high", "medium", "low", "excluded"] },
+          "relation": { "enum": ["equivalent", "subsumed", "partial", "unmatched", "disputed"] },
+          "materialFacet": { "type": "boolean" },
+          "themeId": { "oneOf": [{ "type": "string", "pattern": "^T[0-9]{3,}$" }, { "type": "null" }] },
+          "matchedEvidenceRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/evidenceRef" } },
+          "missingFacets": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "candidateRef": { "type": "string", "pattern": "^BC[0-9]{4,}$" },
+    "evidenceRef": { "type": "string", "pattern": "^E[0-9]{4,}$" }
+  }
+}

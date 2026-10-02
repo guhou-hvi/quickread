@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/reader-review.schema.json",
+  "title": "QuickRead evidence-blind reader advocate review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "role", "reviewerId", "reviewRound", "inputHashes", "evidenceBlind", "scores", "verdict", "issues", "summary"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "role": { "const": "reader_advocate" },
+    "reviewerId": { "type": "string", "minLength": 2 },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["deepRead", "readerMarkdown"],
+      "properties": {
+        "deepRead": { "$ref": "#/$defs/hash" },
+        "readerMarkdown": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "evidenceBlind": { "const": true },
+    "scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coherence", "terminology", "repetition", "hierarchy", "profileFit", "informationLoad"],
+      "properties": {
+        "coherence": { "$ref": "#/$defs/score" },
+        "terminology": { "$ref": "#/$defs/score" },
+        "repetition": { "$ref": "#/$defs/score" },
+        "hierarchy": { "$ref": "#/$defs/score" },
+        "profileFit": { "$ref": "#/$defs/score" },
+        "informationLoad": { "$ref": "#/$defs/score" }
+      }
+    },
+    "verdict": { "enum": ["pass", "revise"] },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "readerBlockRefs", "description", "suggestion"],
+        "properties": {
+          "severity": { "enum": ["error", "warning"] },
+          "readerBlockRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z0-9-]+$" } },
+          "description": { "type": "string", "minLength": 1 },
+          "suggestion": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "summary": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "score": { "type": "integer", "minimum": 1, "maximum": 5 }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/publish-state.schema.json",
+  "title": "QuickRead atomic current publish pointer",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "caseId",
+    "generationId",
+    "releasePath",
+    "manifestSha256",
+    "promotedAt",
+    "inputHashes",
+    "supersedes"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "pattern": "^qr-[0-9]{4}-[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "generationId": { "$ref": "#/$defs/generationId" },
+    "releasePath": { "type": "string", "pattern": "^releases/[a-f0-9]{20}$" },
+    "manifestSha256": { "$ref": "#/$defs/hash" },
+    "promotedAt": { "type": "string", "format": "date-time" },
+    "inputHashes": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "type": "string", "minLength": 1 },
+      "additionalProperties": { "$ref": "#/$defs/hash" }
+    },
+    "supersedes": {
+      "oneOf": [
+        { "$ref": "#/$defs/generationId" },
+        { "type": "null" }
+      ]
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "generationId": { "type": "string", "pattern": "^[a-f0-9]{20}$" }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/reader-review-v240-manifest.schema.json",
+  "title": "QuickRead 2.4 lightweight reader review manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "caseId", "reviewPolicyVersion", "reviewRound", "gatePolicy", "inputHashes", "artifacts", "packets", "humanReviewRequired"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "gatePolicy": { "const": "concrete_hard_errors" },
+    "inputHashes": { "$ref": "#/$defs/inputHashes" },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["segments", "evidence", "deepRead", "readerMap", "research", "readerMarkdown"],
+      "properties": {
+        "segments": { "type": "string" },
+        "evidence": { "type": "string" },
+        "deepRead": { "type": "string" },
+        "readerMap": { "type": "string" },
+        "research": { "type": "string" },
+        "readerMarkdown": { "type": "string" }
+      }
+    },
+    "packets": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "reviewerId", "packetPath", "outputPath", "packetId", "packetHash"],
+        "properties": {
+          "role": { "enum": ["source_scout", "fidelity", "reader_advocate"] },
+          "reviewerId": { "type": "string", "minLength": 1 },
+          "packetPath": { "type": "string", "minLength": 1 },
+          "outputPath": { "type": "string", "minLength": 1 },
+          "packetId": { "$ref": "#/$defs/hash" },
+          "packetHash": { "$ref": "#/$defs/hash" }
+        }
+      }
+    },
+    "humanReviewRequired": { "const": true }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["segments", "evidence", "deepRead", "readerMap", "research", "readerMarkdown"],
+      "properties": {
+        "segments": { "$ref": "#/$defs/hash" },
+        "evidence": { "$ref": "#/$defs/hash" },
+        "deepRead": { "$ref": "#/$defs/hash" },
+        "readerMap": { "$ref": "#/$defs/hash" },
+        "research": { "$ref": "#/$defs/hash" },
+        "readerMarkdown": { "$ref": "#/$defs/hash" }
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "version": "1.2.0",
+  "canvas": {
+    "background": "#eef1f4",
+    "paper": "#ffffff",
+    "text": "#20252b",
+    "muted": "#69717a",
+    "rule": "#e6e9ec"
+  },
+  "accent": {
+    "orange": "#d55e00",
+    "orangeDark": "#934000",
+    "orangeSoft": "#fff8f3",
+    "blue": "#0072b2",
+    "blueDark": "#005a8d",
+    "blueSoft": "#f4f9fc",
+    "yellow": "#c58b00",
+    "yellowDark": "#765100",
+    "yellowSoft": "#fffaee",
+    "green": "#009e73",
+    "greenDark": "#006a4e",
+    "greenSoft": "#f3faf7",
+    "purple": "#7355a6",
+    "purpleDark": "#523b7a",
+    "purpleSoft": "#f8f5fb"
+  },
+  "typography": {
+    "fontFamily": "Inter, Segoe UI, PingFang SC, Microsoft YaHei, Noto Sans CJK SC, sans-serif",
+    "bodyLineHeight": 1.72,
+    "titleWeight": 750,
+    "sectionWeight": 700
+  },
+  "layout": {
+    "pageMaxWidth": 790,
+    "pagePaddingDesktop": 42,
+    "pagePaddingMobile": 22,
+    "sectionGap": 42,
+    "cardRadius": 9
+  }
+}

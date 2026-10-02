@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/context-guide-review.schema.json",
+  "title": "QuickRead context guide incremental review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "caseId", "reviewPolicyVersion", "reviewedAt", "baselineReview", "roleInputHashes", "reviewers", "hardErrors", "warnings", "status"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "enum": ["2.4.1", "2.4.2"] },
+    "reviewedAt": { "type": "string", "format": "date" },
+    "baselineReview": { "type": "string", "minLength": 1 },
+    "roleInputHashes": { "type": "object" },
+    "reviewers": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "reviewerId", "status", "hardErrors", "warnings", "summary"],
+        "properties": {
+          "role": { "enum": ["external_citation", "fidelity", "reader_advocate"] },
+          "reviewerId": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["pass", "fail"] },
+          "hardErrors": { "type": "array", "items": { "type": "string" } },
+          "warnings": { "type": "array", "items": { "type": "string" } },
+          "summary": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "hardErrors": { "type": "array", "items": { "type": "string" } },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "status": { "enum": ["pass", "fail"] }
+  }
+}

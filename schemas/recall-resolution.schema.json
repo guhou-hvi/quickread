@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/recall-resolution.schema.json",
+  "title": "QuickRead deterministic Recall Gate resolution",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "workflowVersion", "caseId", "role", "reviewRound", "inputHashes", "reviewerIds", "targetRefs", "status", "contractErrors", "warnings", "failures", "decisions", "metrics"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "workflowVersion": { "const": "2.2.2" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "role": { "const": "recall_gate" },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "inputHashes": {
+      "type": "object",
+      "required": ["segments", "evidence", "blindCandidates", "blindAlignment", "targetSet"],
+      "properties": {
+        "segments": { "$ref": "#/$defs/hash" },
+        "evidence": { "$ref": "#/$defs/hash" },
+        "blindCandidates": { "$ref": "#/$defs/hash" },
+        "blindAlignment": { "$ref": "#/$defs/hash" },
+        "targetSet": { "$ref": "#/$defs/hash" },
+        "recallAdjudication": { "$ref": "#/$defs/hash" }
+      },
+      "additionalProperties": false
+    },
+    "reviewerIds": { "type": "object" },
+    "targetRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/candidateRef" } },
+    "status": { "enum": ["invalid", "needs_adjudication", "repair_required", "pass"] },
+    "contractErrors": { "type": "array", "items": { "type": "string" } },
+    "warnings": { "type": "array" },
+    "failures": { "type": "array" },
+    "decisions": { "type": "array" },
+    "metrics": { "type": ["object", "null"] }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "candidateRef": { "type": "string", "pattern": "^BC[0-9]{4,}$" }
+  }
+}

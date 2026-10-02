@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/evidence-repair-lineage.schema.json",
+  "title": "QuickRead hash-bound evidence repair lineage",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "reviewPolicyVersion", "repairLogHash", "inputEvidenceHash", "outputEvidenceHash", "entries"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0"] },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "repairLogHash": { "$ref": "#/$defs/hash" },
+    "inputEvidenceHash": { "$ref": "#/$defs/hash" },
+    "outputEvidenceHash": { "$ref": "#/$defs/hash" },
+    "mechanicalFixes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["logHash", "inputEvidenceHash", "outputEvidenceHash", "evidenceRefs"],
+        "properties": {
+          "logHash": { "$ref": "#/$defs/hash" },
+          "inputEvidenceHash": { "$ref": "#/$defs/hash" },
+          "outputEvidenceHash": { "$ref": "#/$defs/hash" },
+          "evidenceRefs": { "$ref": "#/$defs/refs" }
+        }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["oldEvidenceRefs", "newEvidenceRefs", "action"],
+        "properties": {
+          "oldEvidenceRefs": { "$ref": "#/$defs/refs" },
+          "newEvidenceRefs": { "$ref": "#/$defs/refs" },
+          "action": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "refs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^E[0-9]{4,}$" } }
+  }
+}

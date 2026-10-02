@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/coverage.schema.json",
+  "title": "Source coverage ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "sourceHash", "entries"],
+  "properties": {
+    "schemaVersion": { "const": "2.0.0" },
+    "caseId": { "type": "string" },
+    "sourceHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sourceId", "status"],
+        "properties": {
+          "sourceId": { "type": "string" },
+          "status": { "enum": ["mapped", "excluded", "unmapped"] },
+          "segmentId": { "type": ["string", "null"], "pattern": "^S[0-9]{4,}$" },
+          "reason": { "type": ["string", "null"] },
+          "exclusionKind": { "type": ["string", "null"], "enum": ["greeting", "advertisement", "noise", "duplicate", "navigation", "other", null] }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "status": { "const": "mapped" } }, "required": ["status"] },
+            "then": { "required": ["segmentId"], "properties": { "segmentId": { "type": "string" }, "reason": { "type": "null" }, "exclusionKind": { "type": "null" } } }
+          },
+          {
+            "if": { "properties": { "status": { "const": "excluded" } }, "required": ["status"] },
+            "then": { "required": ["reason", "exclusionKind"], "properties": { "segmentId": { "type": "null" }, "reason": { "type": "string", "minLength": 1 }, "exclusionKind": { "type": "string" } } }
+          }
+        ]
+      }
+    }
+  }
+}

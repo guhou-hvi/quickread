@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/quality-report.schema.json",
+  "title": "QuickRead computed quality report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "caseId",
+    "generatedAt",
+    "profile",
+    "source",
+    "segments",
+    "claims",
+    "readerEdition",
+    "evidenceArchive",
+    "brief",
+    "reviews",
+    "humanReview",
+    "status"
+  ],
+  "properties": {
+    "schemaVersion": { "enum": ["2.1.0", "2.2.0", "2.3.0"] },
+    "caseId": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "profile": { "type": "object" },
+    "source": { "type": "object" },
+    "segments": { "type": "object" },
+    "claims": { "type": "object" },
+    "readerEdition": {
+      "type": "object",
+      "required": [
+        "declaredReferenceCoverage",
+        "adjudicatedSemanticCoverage",
+        "partialCount",
+        "missingCount",
+        "contradictedCount",
+        "unreviewableCount",
+        "unresolvedCount",
+        "staleCount"
+      ],
+      "properties": {
+        "declaredReferenceCoverage": { "type": "number", "minimum": 0, "maximum": 1 },
+        "adjudicatedSemanticCoverage": { "type": "number", "minimum": 0, "maximum": 1 },
+        "partialCount": { "type": "integer", "minimum": 0 },
+        "missingCount": { "type": "integer", "minimum": 0 },
+        "contradictedCount": { "type": "integer", "minimum": 0 },
+        "unreviewableCount": { "type": "integer", "minimum": 0 },
+        "unresolvedCount": { "type": "integer", "minimum": 0 },
+        "staleCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "evidenceArchive": { "type": "object" },
+    "contextGuide": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["present", "entryCount", "deepReadReferenceCount", "briefReferenceCount", "coverageContribution", "repairAttemptContribution"],
+      "properties": {
+        "present": { "type": "boolean" },
+        "entryCount": { "type": "integer", "minimum": 0 },
+        "deepReadReferenceCount": { "type": "integer", "minimum": 0 },
+        "briefReferenceCount": { "type": "integer", "minimum": 0 },
+        "coverageContribution": { "const": 0 },
+        "repairAttemptContribution": { "const": 0 }
+      }
+    },
+    "brief": { "type": "object" },
+    "reviews": {
+      "type": "object",
+      "required": [
+        "round",
+        "status",
+        "claimAudit",
+        "blindRecall",
+        "fidelity",
+        "readerAdvocate",
+        "claimBundles",
+        "unresolvedConflictCount",
+        "staleCount",
+        "errors"
+      ],
+      "properties": {
+        "round": { "type": ["string", "null"] },
+        "status": { "enum": ["pass", "fail", "missing"] },
+        "claimAudit": { "type": ["object", "null"] },
+        "blindRecall": { "type": ["object", "null"] },
+        "fidelity": { "type": ["object", "null"] },
+        "readerAdvocate": { "type": ["object", "null"] },
+        "claimBundles": { "type": ["object", "null"] },
+        "unresolvedConflictCount": { "type": "integer", "minimum": 0 },
+        "staleCount": { "type": "integer", "minimum": 0 },
+        "unlabelledAdditions": { "type": "integer", "minimum": 0 },
+        "errors": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "humanReview": { "type": "object" },
+    "hardErrors": { "type": "array", "items": { "type": "string" } },
+    "diagnostics": { "type": "array", "items": {} },
+    "errors": { "type": "array", "items": { "type": "string" } },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "metricPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["quantitativeMetricsBlocking"],
+      "properties": {
+        "quantitativeMetricsBlocking": { "const": false }
+      }
+    },
+    "status": { "enum": ["pass", "fail"] }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "2.1.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "required": ["errors", "warnings"]
+      }
+    },
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "2.2.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "required": ["hardErrors", "warnings", "diagnostics", "metricPolicy"]
+      }
+    },
+    {
+      "if": {
+        "properties": { "schemaVersion": { "const": "2.3.0" } },
+        "required": ["schemaVersion"]
+      },
+      "then": {
+        "required": ["contextGuide", "hardErrors", "warnings", "diagnostics", "metricPolicy"]
+      }
+    }
+  ]
+}

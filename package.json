@@ -1,0 +1,67 @@
+{
+  "name": "quickread-longform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Conversation-driven long-form interview and article quick-read workflow",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "ingest": "node scripts/ingest.mjs",
+    "init-case": "node scripts/init-case.mjs",
+    "parse": "node scripts/parse-source.mjs",
+    "profile": "node scripts/profile-case.mjs",
+    "segment": "node scripts/segment-source.mjs",
+    "evidence-check": "node scripts/evidence-check.mjs",
+    "evidence-diff": "node scripts/evidence-diff.mjs",
+    "claim-mechanical-fix": "node scripts/claim-mechanical-fix.mjs",
+    "claim-gate-prepare": "node scripts/claim-gate.mjs prepare",
+    "claim-gate-resolve": "node scripts/claim-gate.mjs resolve",
+    "build-deep": "node scripts/deep-read.mjs",
+    "quality": "node scripts/quality-report.mjs",
+    "migrate-v2": "node scripts/migrate-v2.mjs",
+    "migrate-v21": "node scripts/migrate-v21.mjs",
+    "migrate-v22": "node scripts/migrate-v22.mjs",
+    "migrate-v24": "node scripts/migrate-v24.mjs",
+    "migrate-v24-advance": "node scripts/advance-migration-v24.mjs",
+    "upgrade-reader-v240": "node scripts/upgrade-reader-v240.mjs",
+    "record-participant-review": "node scripts/participant-guide-review.mjs",
+    "participant-review-prepare": "node scripts/participant-review-prepare.mjs",
+    "context-review": "node scripts/context-guide-review.mjs",
+    "context-upgrade-v242": "node scripts/context-upgrade-v242.mjs",
+    "sync-context-brief-v242": "node scripts/sync-context-minutes-v242.mjs",
+    "relocate-context-leads-v242": "node scripts/relocate-context-leads-v242.mjs",
+    "record-render-review-v24": "node scripts/render-review-v24.mjs",
+    "finalize-migration-v24": "node scripts/finalize-migration-v24.mjs",
+    "review-prepare": "node scripts/review-prepare.mjs",
+    "review-validate": "node scripts/review-validate.mjs",
+    "review-validate-delta": "node scripts/review-validate-delta.mjs",
+    "review-consensus": "node scripts/review-consensus.mjs",
+    "review-lite-prepare": "node scripts/review-lite-prepare.mjs",
+    "review-lite-validate": "node scripts/review-lite-validate.mjs",
+    "review-lite-consensus": "node scripts/review-lite-consensus.mjs",
+    "pilot-report": "node scripts/pilot-report.mjs",
+    "pilot-check": "node scripts/check-pilots.mjs",
+    "validate": "node scripts/validate-case.mjs",
+    "render": "node scripts/render.mjs",
+    "screenshot": "node scripts/screenshot.mjs",
+    "catalog": "node scripts/catalog.mjs",
+    "check": "node scripts/check-all.mjs",
+    "render-all": "node scripts/render-all.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "^1.55.0"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "guhou-hvi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/guhou-hvi/quickread.git"
+  },
+  "homepage": "https://github.com/guhou-hvi/quickread",
+  "bugs": {
+    "url": "https://github.com/guhou-hvi/quickread/issues"
+  }
+}

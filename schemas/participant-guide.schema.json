@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/participant-guide.schema.json",
+  "title": "QuickRead participant guide",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "eventDate", "verifiedAt", "mode", "principals", "supportingRoles"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0"] },
+    "caseId": { "type": "string", "minLength": 1 },
+    "eventDate": {
+      "description": "Preserve verified precision: 1.1.0 permits YYYY-MM or a full date; 1.0.0 requires a full date. Never infer a day from month-only evidence.",
+      "oneOf": [
+        { "$ref": "#/$defs/fullDate" },
+        { "type": "string", "minLength": 7, "maxLength": 7, "pattern": "^[0-9]{4}-(?:0[1-9]|1[0-2])$" }
+      ]
+    },
+    "dateBasis": { "enum": ["event", "publication"] },
+    "verifiedAt": { "$ref": "#/$defs/fullDate" },
+    "mode": { "enum": ["single_guest", "multi_speaker"] },
+    "principals": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/person" } },
+    "supportingRoles": { "type": "array", "items": { "$ref": "#/$defs/person" } }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "schemaVersion": { "const": "1.0.0" } } },
+      "then": { "properties": { "eventDate": { "$ref": "#/$defs/fullDate" } } }
+    }
+  ],
+  "$defs": {
+    "fullDate": {
+      "type": "string",
+      "format": "date",
+      "minLength": 10,
+      "maxLength": 10,
+      "pattern": "^[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])$"
+    },
+    "person": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "roleAtEvent", "affiliationAtEvent", "relevantContext", "briefContext", "citationRefs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "name": { "type": "string", "minLength": 1 },
+        "roleAtEvent": { "type": "string", "minLength": 1 },
+        "affiliationAtEvent": { "type": "string", "minLength": 1 },
+        "relevantContext": { "type": "string", "minLength": 1 },
+        "briefContext": { "type": "string", "minLength": 1 },
+        "citationRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^R[0-9]+$" }
+        }
+      }
+    }
+  }
+}

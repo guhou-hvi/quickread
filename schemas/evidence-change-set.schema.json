@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/evidence-change-set.schema.json",
+  "title": "QuickRead evidence dependency change set",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "caseId",
+    "reviewPolicyVersion",
+    "mode",
+    "baseline",
+    "current",
+    "changes",
+    "affected",
+    "requiredReviews",
+    "reasons"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "mode": { "enum": ["mechanical", "semantic_delta", "structural_full"] },
+    "baseline": { "$ref": "#/$defs/snapshotRef" },
+    "current": { "$ref": "#/$defs/snapshotRef" },
+    "changes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["addedRefs", "removedRefs", "modifiedRefs", "mechanicalRefs", "unchangedRefs"],
+      "properties": {
+        "addedRefs": { "$ref": "#/$defs/refList" },
+        "removedRefs": { "$ref": "#/$defs/refList" },
+        "modifiedRefs": { "$ref": "#/$defs/refList" },
+        "mechanicalRefs": { "$ref": "#/$defs/refList" },
+        "unchangedRefs": { "$ref": "#/$defs/refList" }
+      }
+    },
+    "affected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["segmentRefs", "themeRefs", "readerBlockRefs"],
+      "properties": {
+        "segmentRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "themeRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "readerBlockRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "requiredReviews": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceCheck", "claimAudit", "fullClaimAudit", "fidelity", "readerAdvocate", "sourceScout", "blindRecall", "coverageAB"],
+      "properties": {
+        "evidenceCheck": { "type": "boolean" },
+        "claimAudit": { "type": "boolean" },
+        "fullClaimAudit": { "type": "boolean" },
+        "fidelity": { "type": "boolean" },
+        "readerAdvocate": { "type": "boolean" },
+        "sourceScout": { "type": "boolean" },
+        "blindRecall": { "const": false },
+        "coverageAB": { "const": false }
+      }
+    },
+    "reasons": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidenceRef": { "type": "string", "pattern": "^E[0-9]{4,}$" },
+    "refList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/evidenceRef" } },
+    "snapshotRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "normalizedSource", "segments", "speakerMap", "evidence", "deepRead"],
+      "properties": {
+        "source": { "$ref": "#/$defs/hash" },
+        "normalizedSource": { "$ref": "#/$defs/hash" },
+        "segments": { "$ref": "#/$defs/hash" },
+        "speakerMap": { "$ref": "#/$defs/hash" },
+        "evidence": { "$ref": "#/$defs/hash" },
+        "deepRead": { "$ref": "#/$defs/hash" }
+      }
+    }
+  }
+}

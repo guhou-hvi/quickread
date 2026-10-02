@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/evidence-baseline.schema.json",
+  "title": "QuickRead accepted evidence baseline",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "reviewPolicyVersion", "acceptance", "evidencePath", "hashes", "claims"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "acceptance": { "enum": ["reviewed", "migrated_reviewed_history", "initial_full_audit_pre_repair"] },
+    "evidencePath": { "const": "work/evidence-baseline.jsonl" },
+    "claimOrganizationWarningResolution": {
+      "description": "Optional hash-bound 2.4.2 full Claim Gate resolution retaining supported organization advice as warnings.",
+      "type": "string", "pattern": "^[a-f0-9]{64}$"
+    },
+    "hashes": { "$ref": "evidence-change-set.schema.json#/$defs/snapshotRef" },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "semanticHash", "supportHash", "fullHash", "importance", "themeId", "segmentRefs", "readerBlockRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^E[0-9]{4,}$" },
+          "semanticHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "supportHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "fullHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "importance": { "enum": ["high", "medium", "low"] },
+          "themeId": { "type": "string", "minLength": 1 },
+          "segmentRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "readerBlockRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    }
+  }
+}

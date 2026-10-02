@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/claims-delta-review.schema.json",
+  "title": "QuickRead changed-claim audit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "reviewPolicyVersion", "role", "reviewerId", "reviewRound", "inputHashes", "scope", "entries"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "role": { "const": "claim_delta_auditor" },
+    "reviewerId": { "type": "string", "minLength": 2 },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["changeSet", "baselineEvidence", "currentEvidence", "segments"],
+      "properties": {
+        "changeSet": { "$ref": "#/$defs/hash" },
+        "baselineEvidence": { "$ref": "#/$defs/hash" },
+        "currentEvidence": { "$ref": "#/$defs/hash" },
+        "segments": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["addedRefs", "removedRefs", "modifiedRefs"],
+      "properties": {
+        "addedRefs": { "$ref": "#/$defs/refList" },
+        "removedRefs": { "$ref": "#/$defs/refList" },
+        "modifiedRefs": { "$ref": "#/$defs/refList" }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidenceRef", "changeType", "verdict", "issueKinds", "rationale"],
+        "properties": {
+          "evidenceRef": { "$ref": "#/$defs/evidenceRef" },
+          "changeType": { "enum": ["added", "removed", "modified"] },
+          "verdict": { "enum": ["pass", "revise", "hard_error"] },
+          "issueKinds": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidenceRef": { "type": "string", "pattern": "^E[0-9]{4,}$" },
+    "refList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/evidenceRef" } }
+  }
+}

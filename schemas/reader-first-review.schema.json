@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/reader-first-review.schema.json",
+  "title": "QuickRead reader-first multi-agent review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "caseId",
+    "reviewPolicyVersion",
+    "reviewRound",
+    "gatePolicy",
+    "inputHashes",
+    "reviewers",
+    "hardErrors",
+    "warnings",
+    "diagnostics",
+    "humanReviewRequired"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "const": "2.3.2" },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "gatePolicy": { "const": "concrete_hard_errors" },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["segments", "evidence", "deepRead", "readerMap", "research", "brief", "readerMarkdown"],
+      "properties": {
+        "segments": { "type": "string" },
+        "evidence": { "type": "string" },
+        "deepRead": { "type": "string" },
+        "readerMap": { "type": "string" },
+        "research": { "type": "string" },
+        "brief": { "type": "string" },
+        "readerMarkdown": { "type": "string" }
+      }
+    },
+    "reviewers": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "reviewerId", "status", "hardErrors", "warnings", "summary"],
+        "properties": {
+          "role": { "enum": ["source_scout", "fidelity", "reader_advocate"] },
+          "reviewerId": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["pass", "warning", "fail"] },
+          "hardErrors": { "type": "array", "items": { "type": "string" } },
+          "warnings": { "type": "array", "items": { "type": "string" } },
+          "summary": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "hardErrors": { "type": "array", "items": { "type": "string" } },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "diagnostics": { "type": "array", "items": { "type": "string" } },
+    "humanReviewRequired": { "const": true }
+  }
+}

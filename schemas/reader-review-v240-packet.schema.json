@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/reader-review-v240-packet.schema.json",
+  "title": "QuickRead 2.4 isolated lightweight reader review packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "reviewPolicyVersion", "reviewRound", "role", "assignedReviewerId", "inputHashes", "outputPath", "instructions", "outputContract", "payload", "packetId"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "role": { "enum": ["source_scout", "fidelity", "reader_advocate"] },
+    "assignedReviewerId": { "type": "string", "minLength": 1 },
+    "inputHashes": { "$ref": "reader-review-v240-manifest.schema.json#/$defs/inputHashes" },
+    "outputPath": { "type": "string", "minLength": 1 },
+    "instructions": { "type": "string", "minLength": 1 },
+    "outputContract": { "type": "object" },
+    "payload": { "type": "object" },
+    "packetId": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

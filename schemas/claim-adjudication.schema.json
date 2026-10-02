@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/claim-adjudication.schema.json",
+  "title": "QuickRead targeted claim-review adjudication",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "workflowVersion", "caseId", "role", "reviewerId", "reviewRound", "inputHashes", "entries"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "workflowVersion": { "const": "2.2.1" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "role": { "const": "claim_adjudicator" },
+    "reviewerId": { "type": "string", "minLength": 2 },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["segments", "evidence", "primaryClaimReview", "secondaryClaimReview", "targetSet"],
+      "properties": {
+        "segments": { "$ref": "#/$defs/hash" },
+        "evidence": { "$ref": "#/$defs/hash" },
+        "primaryClaimReview": { "$ref": "#/$defs/hash" },
+        "secondaryClaimReview": { "$ref": "#/$defs/hash" },
+        "targetSet": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidenceRef", "triggers", "selection", "confidence", "rationale"],
+        "properties": {
+          "evidenceRef": { "$ref": "#/$defs/evidenceRef" },
+          "triggers": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "enum": ["verdict_conflict", "finding_conflict", "remedy_conflict"] }
+          },
+          "selection": { "enum": ["primary", "secondary", "original", "unreviewable"] },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidenceRef": { "type": "string", "pattern": "^E[0-9]{4,}$" }
+  }
+}

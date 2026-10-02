@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/review-manifest.schema.json",
+  "title": "QuickRead multi-agent review manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "workflowVersion", "reviewRound", "createdAt", "assignments", "inputHashes", "artifacts"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "workflowVersion": { "enum": ["2.2.0", "2.3.0", "2.3.1", "2.3.2", "2.4.0"] },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "assignments": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "reviewerId"],
+        "properties": {
+          "role": { "$ref": "#/$defs/reviewRole" },
+          "reviewerId": { "$ref": "#/$defs/reviewerId" }
+        }
+      }
+    },
+    "inputHashes": { "$ref": "#/$defs/inputHashes" },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claimReview", "blindCandidates", "blindAlignment", "coverageA", "coverageB", "fidelityReview", "readerReview", "adjudication", "claimBundles", "evidenceMigration", "repairLog"],
+      "properties": {
+        "claimReview": { "$ref": "#/$defs/path" },
+        "blindCandidates": { "$ref": "#/$defs/path" },
+        "blindAlignment": { "$ref": "#/$defs/path" },
+        "coverageA": { "$ref": "#/$defs/path" },
+        "coverageB": { "$ref": "#/$defs/path" },
+        "fidelityReview": { "$ref": "#/$defs/path" },
+        "readerReview": { "$ref": "#/$defs/path" },
+        "adjudication": { "$ref": "#/$defs/path" },
+        "claimBundles": { "$ref": "#/$defs/path" },
+        "themeMap": { "$ref": "#/$defs/path" },
+        "evidenceMigration": { "oneOf": [{ "$ref": "#/$defs/path" }, { "type": "null" }] },
+        "repairLog": { "$ref": "#/$defs/path" }
+      }
+    }
+  },
+  "$defs": {
+    "reviewRole": {
+      "enum": ["claim_auditor", "blind_recall", "alignment", "coverage_a", "coverage_b", "fidelity", "reader_advocate", "adjudicator", "repair_editor"]
+    },
+    "reviewerId": { "type": "string", "minLength": 2, "maxLength": 128 },
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["segments", "evidence", "claimReview", "deepRead", "readerMap", "claimBundles", "research"],
+      "properties": {
+        "segments": { "$ref": "#/$defs/hash" },
+        "evidence": { "$ref": "#/$defs/hash" },
+        "claimReview": { "$ref": "#/$defs/hash" },
+        "deepRead": { "$ref": "#/$defs/hash" },
+        "readerMap": { "$ref": "#/$defs/hash" },
+        "claimBundles": { "$ref": "#/$defs/hash" },
+        "themeMap": { "$ref": "#/$defs/hash" },
+        "research": { "$ref": "#/$defs/hash" },
+        "evidenceMigration": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:)(?![/\\\\])(?!.*\\.\\.).+$" }
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/claim-review-resolution.schema.json",
+  "title": "QuickRead 2.2.1 claim-review gate resolution",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "workflowVersion", "caseId", "role", "reviewRound", "inputHashes", "reviewerIds", "status", "targetRefs", "contractErrors", "semanticFailures", "conflicts", "decisions", "metrics"],
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "invalid" } }, "required": ["status"] },
+      "then": { "properties": { "contractErrors": { "minItems": 1 } } },
+      "else": {
+        "properties": {
+          "caseId": { "minLength": 1 },
+          "reviewRound": { "minimum": 1 },
+          "inputHashes": { "required": ["segments", "evidence", "primaryClaimReview"] },
+          "reviewerIds": { "required": ["primary"] }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "workflowVersion": { "const": "2.2.1" },
+    "caseId": { "type": "string" },
+    "role": { "const": "claim_gate" },
+    "reviewRound": { "type": "integer", "minimum": 0 },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "segments": { "$ref": "#/$defs/hash" },
+        "evidence": { "$ref": "#/$defs/hash" },
+        "primaryClaimReview": { "$ref": "#/$defs/hash" },
+        "secondaryClaimReview": { "$ref": "#/$defs/hash" },
+        "targetSet": { "$ref": "#/$defs/hash" },
+        "adjudication": { "$ref": "#/$defs/hash" },
+        "mechanicalFix": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "reviewerIds": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primary": { "type": "string", "minLength": 2 },
+        "secondary": { "type": "string", "minLength": 2 },
+        "adjudicator": { "type": "string", "minLength": 2 }
+      }
+    },
+    "status": { "enum": ["invalid", "needs_mechanical_fix", "needs_secondary", "needs_adjudication", "repair_required", "human_required", "pass"] },
+    "targetRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/evidenceRef" } },
+    "contractErrors": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "semanticFailures": { "type": "array", "items": { "$ref": "#/$defs/decision" } },
+    "warningDispositions": {
+      "description": "Machine-classified organization advice under case workflow 2.4.2; original reviewer findings remain immutable and hash-bound. Not a reviewer pass or semantic repair.",
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["evidenceRef", "decision", "basis", "reviewPolicyVersion", "entryHash", "claimHash"],
+        "properties": {
+          "evidenceRef": { "$ref": "#/$defs/evidenceRef" },
+          "decision": { "const": "warning" },
+          "basis": { "const": "supported_compound_organization" },
+          "reviewPolicyVersion": { "const": "2.4.2" },
+          "entryHash": { "$ref": "#/$defs/hash" },
+          "claimHash": { "$ref": "#/$defs/hash" }
+        }
+      }
+    },
+    "conflicts": { "type": "array", "items": { "$ref": "#/$defs/conflict" } },
+    "decisions": { "type": "array", "items": { "$ref": "#/$defs/decision" } },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primaryEntryCount", "targetCount", "agreementCount", "conflictCount", "resolvedPassCount", "resolvedNonpassCount", "mechanicalResolvedCount"],
+      "properties": {
+        "primaryEntryCount": { "type": "integer", "minimum": 0 },
+        "targetCount": { "type": "integer", "minimum": 0 },
+        "agreementCount": { "type": "integer", "minimum": 0 },
+        "conflictCount": { "type": "integer", "minimum": 0 },
+        "resolvedPassCount": { "type": "integer", "minimum": 0 },
+        "resolvedNonpassCount": { "type": "integer", "minimum": 0 },
+        "mechanicalResolvedCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of explicit primary missing_support_quote findings plus exact bridge-proven legacy quote-only findings resolved by the bound mechanical report; extra quote-only report entries are not counted."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidenceRef": { "type": "string", "pattern": "^E[0-9]{4,}$" },
+    "findingCode": {
+      "enum": [
+        "compound_claim",
+        "support_gap",
+        "overstatement",
+        "importance_misclassified",
+        "theme_misclassified",
+        "speaker_attribution_unsafe",
+        "duplicate_claim",
+        "empty_semantics",
+        "other_semantic"
+      ]
+    },
+    "remedy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mergeWithRefs", "replacementStatements", "importance", "themeId", "speaker"],
+      "properties": {
+        "mergeWithRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/evidenceRef" } },
+        "replacementStatements": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "importance": { "enum": ["high", "medium", "low", null] },
+        "themeId": { "type": ["string", "null"], "pattern": "^T[0-9]{3,}$" },
+        "speaker": { "enum": ["change", null] }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceRef", "verdict", "findingCodes", "remedy"],
+      "properties": {
+        "evidenceRef": { "$ref": "#/$defs/evidenceRef" },
+        "verdict": { "enum": ["pass", "revise", "split", "merge", "remove"] },
+        "findingCodes": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/findingCode" } },
+        "remedy": { "$ref": "#/$defs/remedy" }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceRef", "triggers", "primary", "secondary"],
+      "properties": {
+        "evidenceRef": { "$ref": "#/$defs/evidenceRef" },
+        "triggers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["verdict_conflict", "finding_conflict", "remedy_conflict"] }
+        },
+        "primary": { "$ref": "#/$defs/decision" },
+        "secondary": { "$ref": "#/$defs/decision" }
+      }
+    }
+  }
+}

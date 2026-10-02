@@ -1,0 +1,237 @@
+{
+  "workflowVersion": "2.4.2",
+  "promptVersion": "3.4.2",
+  "templateVersion": "1.4.4",
+  "brand": "QuickRead Longform",
+  "publicVersion": "v0.1",
+  "editorPersona": {
+    "name": "QR-Pilot",
+    "avatarText": "QR",
+    "footerRole": "AI 小编",
+    "uid": "440209381"
+  },
+  "outputLanguage": "zh-CN",
+  "audience": "广泛知识读者",
+  "budgets": {
+    "deepRead": {
+      "readerMinimumGuideline": 12000,
+      "readerMaximumGuideline": 18000,
+      "readerBaseCharacters": 4000,
+      "readerCharactersPerDensityPoint": 500,
+      "readerSourceCharacterRatio": 0.12,
+      "readerSoftCharacterCap": 35000,
+      "paragraphTargetMin": 120,
+      "paragraphTargetMax": 450,
+      "paragraphHardMax": 650,
+      "maximumListItems": 7,
+      "targetListCharacterShare": 0.25,
+      "maximumListCharacterShare": 0.35,
+      "maximumReaderDuplicateRate": 0.05,
+      "timelineMinimumItems": 0,
+      "timelineMaximumItems": 20,
+      "editorNoteMinimum": 0,
+      "editorNoteMaximum": 0
+    },
+    "brief": {
+      "targetMin": 3000,
+      "targetMax": 8000,
+      "charactersPerDensityPoint": 250,
+      "readingCharactersPerMinute": 450
+    },
+    "briefSections": {
+      "min": 4,
+      "max": 8
+    }
+  },
+  "render": {
+    "viewportCssWidth": 830,
+    "deviceScaleFactor": 2,
+    "pngWidth": 1660,
+    "targetHeightMin": 8000,
+    "targetHeightMax": 14000,
+    "warningHeight": 16000,
+    "mobileCssWidth": 390,
+    "mobilePng": {
+      "viewportCssWidth": 480,
+      "deviceScaleFactor": 2.25,
+      "pngWidth": 1080,
+      "rootFontCssPx": 18.5,
+      "referenceDisplayCssWidth": 390,
+      "minimumEffectiveBodyFontCssPx": 15,
+      "targetHeightMin": 16000,
+      "targetHeightMax": 22000,
+      "warningHeight": 24000,
+      "segmentTargetHeight": 12000,
+      "segmentMaximumHeight": 16000
+    }
+  },
+  "qualityGates": {
+    "segmentCoverage": 1,
+    "claimSupport": 1,
+    "declaredHighMediumReferenceCoverage": 1,
+    "adjudicatedHighMediumSemanticCoverage": 1,
+    "evidenceBookCoverage": 1,
+    "allClaimRecall": 0.95,
+    "maximumNearDuplicateRate": 0.05,
+    "maximumLowConfidenceMisattributions": 0,
+    "maximumUnlabelledAdditions": 0,
+    "quantitativeMetricsBlocking": false
+  },
+  "reviews": {
+    "version": "2.4.2",
+    "gatePolicy": "concrete_hard_errors",
+    "evidenceChangePolicy": {
+      "modes": [
+        "mechanical",
+        "semantic_delta",
+        "structural_full"
+      ],
+      "localHashInvalidation": true,
+      "mechanicalConsumesRepairAttempt": false,
+      "participantGuideConsumesRepairAttempt": false,
+      "contextGuideConsumesRepairAttempt": false,
+      "semanticDeltaUsesFullRecall": false,
+      "structuralFullRequiresClaimAudit": true
+    },
+    "repairClassification": {
+      "attemptRequiredFor": [
+        "fabricated_statement",
+        "contradicted_statement",
+        "misattributed_speaker",
+        "fabricated_or_materially_altered_quote",
+        "material_number_change",
+        "material_causality_change",
+        "material_position_change",
+        "invalid_external_source",
+        "independently_confirmed_core_omission"
+      ],
+      "doesNotConsumeAttempt": [
+        "missing_existing_evidence_reference",
+        "internal_provenance_metadata",
+        "sorting_or_locator_format",
+        "nonmaterial_wording_precision",
+        "evidence_only_noncore_asr_ambiguity",
+        "participant_guide",
+        "context_guide",
+        "readability_warning"
+      ],
+      "fullReviewForbiddenForMechanicalOrScopedDelta": true
+    },
+    "minimumCoverageConfidence": 0.8,
+    "claimBundleTargetMinimum": 2,
+    "claimBundleTargetMaximum": 6,
+    "claimBundleWarningMaximum": 6,
+    "claimBundleHardMaximum": 10,
+    "maximumRepairRounds": 2,
+    "repairRoundOverrides": {},
+    "calibratedRecall": {
+      "denominator": "eligible_atomic_candidates",
+      "highMinimum": 1,
+      "mediumMinimum": 0.98,
+      "overallMinimum": 0.95,
+      "maximumCoreOmissions": 0,
+      "blocking": false
+    },
+    "fidelity": {
+      "layers": [
+        "source_and_navigation",
+        "external_citation",
+        "editorial_provenance"
+      ],
+      "requireAllLayers": true,
+      "partialSeverity": "warning",
+      "hardIssueKinds": [
+        "fabrication",
+        "contradiction",
+        "misattribution",
+        "material_distortion",
+        "invalid_external",
+        "quote_integrity"
+      ]
+    },
+    "emotionalFidelity": {
+      "deepReadAnchorTarget": [
+        5,
+        8
+      ],
+      "briefAnchorTarget": [
+        2,
+        4
+      ],
+      "countsAreBlocking": false,
+      "preserveCodeSwitching": true,
+      "requireStrongJudgmentAttribution": true
+    },
+    "readerBorderlineReview": {
+      "trigger": "any_dimension_equals_minimum",
+      "triggerScore": 4,
+      "requiresIndependentSecondReview": true
+    },
+    "readerMinimumScore": 4,
+    "readerScoresBlocking": false,
+    "readerDimensions": [
+      "coherence",
+      "terminology",
+      "repetition",
+      "hierarchy",
+      "profileFit",
+      "informationLoad"
+    ]
+  },
+  "migration": {
+    "pilotCases": [],
+    "activeCases": [],
+    "frozenCases": [],
+    "humanReviewFirstCase": null,
+    "humanReviewDimensions": [
+      "completeness",
+      "faithfulness",
+      "traceability",
+      "readability",
+      "hierarchy",
+      "profileFit"
+    ],
+    "humanReviewSuggestedScore": 4
+  },
+  "contextUpgrade": {
+    "version": "2.4.2",
+    "ledgerPath": "work/context-upgrade-v2.4.2.json",
+    "allowlist": [],
+    "batches": {},
+    "stages": [
+      "snapshotted",
+      "researched",
+      "context_ready",
+      "reader_bound",
+      "brief_bound",
+      "reviewed",
+      "rendered",
+      "complete"
+    ],
+    "targetVersions": {
+      "workflow": "2.4.2",
+      "prompt": "3.4.2",
+      "deepReadSchema": "2.5.0",
+      "briefSchema": "1.7.0",
+      "template": "1.4.4",
+      "reviewPolicy": "2.4.2"
+    }
+  },
+  "compatibility": {
+    "retainedWorkflowVersions": [
+      "1.5.0",
+      "2.0.0",
+      "2.1.0",
+      "2.2.0",
+      "2.3.0",
+      "2.4.0",
+      "2.4.1"
+    ]
+  },
+  "provenance": [
+    "source_fact",
+    "speaker_view",
+    "external",
+    "editorial"
+  ]
+}

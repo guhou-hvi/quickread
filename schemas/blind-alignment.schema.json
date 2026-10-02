@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/blind-alignment.schema.json",
+  "title": "QuickRead semantic alignment of blind candidates",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "role", "reviewerId", "reviewRound", "inputHashes", "entries"],
+  "properties": {
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0"] },
+    "caseId": { "type": "string", "minLength": 1 },
+    "role": { "const": "alignment" },
+    "reviewerId": { "type": "string", "minLength": 2 },
+    "reviewRound": { "type": "integer", "minimum": 1 },
+    "inputHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["blindCandidates", "evidence"],
+      "properties": {
+        "blindCandidates": { "$ref": "#/$defs/hash" },
+        "evidence": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["candidateRef", "relation", "matchedEvidenceRefs", "missingFacets", "rationale"],
+        "properties": {
+          "candidateRef": { "type": "string", "pattern": "^BC[0-9]{4,}$" },
+          "relation": { "enum": ["equivalent", "subsumed", "partial", "unmatched", "disputed"] },
+          "candidateValidity": { "enum": ["valid", "question", "navigation", "asr_fragment", "incomplete", "subsumed"] },
+          "calibratedImportance": { "enum": ["high", "medium", "low", "excluded"] },
+          "materialFacet": { "type": "boolean" },
+          "themeId": { "oneOf": [{ "type": "string", "pattern": "^T[0-9]{3,}$" }, { "type": "null" }] },
+          "matchedEvidenceRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/evidenceRef" } },
+          "missingFacets": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "schemaVersion": { "const": "1.1.0" } }, "required": ["schemaVersion"] },
+      "then": {
+        "properties": {
+          "entries": {
+            "items": { "required": ["candidateRef", "relation", "candidateValidity", "calibratedImportance", "materialFacet", "themeId", "matchedEvidenceRefs", "missingFacets", "rationale"] }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidenceRef": { "type": "string", "pattern": "^E[0-9]{4,}$" }
+  }
+}

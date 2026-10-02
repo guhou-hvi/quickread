@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/human-review.schema.json",
+  "title": "QuickRead pilot human review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "caseId", "reviewedAt", "reviewerType", "reviewer", "scores", "decision", "notes"],
+  "properties": {
+    "schemaVersion": { "const": "1.1.0" },
+    "caseId": { "type": "string" },
+    "reviewedAt": { "type": "string", "format": "date-time" },
+    "reviewerType": { "const": "human" },
+    "reviewer": { "type": "string", "minLength": 1 },
+    "scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["completeness", "faithfulness", "traceability", "readability", "hierarchy", "profileFit"],
+      "properties": {
+        "completeness": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "faithfulness": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "traceability": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "readability": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "hierarchy": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "profileFit": { "type": "integer", "minimum": 1, "maximum": 5 }
+      }
+    },
+    "decision": { "enum": ["pass", "revise"] },
+    "notes": { "type": "string" }
+  }
+}

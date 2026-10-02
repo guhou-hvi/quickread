@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quickread.local/schemas/reader-review-v240-reader-map-mechanical.schema.json",
+  "title": "QuickRead 2.4 reader-map mechanical canonicalization manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema", "schemaVersion", "caseId", "reviewPolicyVersion", "reviewRound",
+    "reviewMode", "baseRound", "gatePolicy", "base", "inputHashes",
+    "mechanicalProof", "readerMaps", "readerSnapshot", "rerunRoles",
+    "inheritedRoles", "packets", "inheritedReports", "humanReviewRequired",
+    "repairAttemptConsumed"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "1.0.0" },
+    "caseId": { "type": "string", "minLength": 1 },
+    "reviewPolicyVersion": { "const": "2.4.0" },
+    "reviewRound": { "type": "integer", "minimum": 2 },
+    "reviewMode": { "const": "reader_map_mechanical" },
+    "baseRound": { "type": "integer", "minimum": 1 },
+    "gatePolicy": { "const": "concrete_hard_errors" },
+    "base": { "type": "object" },
+    "inputHashes": { "$ref": "reader-review-v240-manifest.schema.json#/$defs/inputHashes" },
+    "mechanicalProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation", "beforeReaderMapHash", "currentReaderMapHash",
+        "reconstructedBeforeHash", "canonicalSemanticHash", "beforeEntryCount",
+        "currentEntryCount", "duplicateEntriesRemoved"
+      ],
+      "properties": {
+        "operation": { "const": "merge_duplicate_evidence_entries" },
+        "beforeReaderMapHash": { "$ref": "#/$defs/hash" },
+        "currentReaderMapHash": { "$ref": "#/$defs/hash" },
+        "reconstructedBeforeHash": { "$ref": "#/$defs/hash" },
+        "canonicalSemanticHash": { "$ref": "#/$defs/hash" },
+        "beforeEntryCount": { "type": "integer", "minimum": 2 },
+        "currentEntryCount": { "type": "integer", "minimum": 1 },
+        "duplicateEntriesRemoved": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "readerMaps": { "type": "object" },
+    "readerSnapshot": { "type": "object" },
+    "rerunRoles": { "type": "array", "maxItems": 0 },
+    "inheritedRoles": {
+      "type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true,
+      "items": { "enum": ["source_scout", "fidelity", "reader_advocate"] }
+    },
+    "packets": { "type": "array", "maxItems": 0 },
+    "inheritedReports": { "type": "array", "minItems": 3, "maxItems": 3 },
+    "humanReviewRequired": { "const": true },
+    "repairAttemptConsumed": { "const": false }
+  },
+  "$defs": { "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+}
