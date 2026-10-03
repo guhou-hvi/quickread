@@ -2,7 +2,7 @@
   "schemaVersion": "1.0.0",
   "status": "release-snapshot",
   "licenseStatus": "owner-approved",
-  "manifestSha256": "2b2ff936c8ff88f50e36cf58db3dd4a8fcb869ac2dca9689b374e264c745aa7c",
+  "manifestSha256": "8fbcf74d95ae70ffa43f697df157ebfe04da350fb40830493dc860cb2d2be01f",
   "files": [
     {
       "path": ".gitattributes",
@@ -365,9 +365,17 @@
     {
       "path": "README.md",
       "source": "release/overlays/README.md",
-      "sourceSha256": "d9760b4c50d83d82bc0729eef705f589b5d656860bed46cdeaf4125adda4dea8",
-      "sha256": "d9760b4c50d83d82bc0729eef705f589b5d656860bed46cdeaf4125adda4dea8",
-      "bytes": 6112,
+      "sourceSha256": "b27e78e799666115a1358736cdae013a657d4ddf97a15dc874b184643045412b",
+      "sha256": "b27e78e799666115a1358736cdae013a657d4ddf97a15dc874b184643045412b",
+      "bytes": 6155,
+      "transform": null
+    },
+    {
+      "path": "README.en.md",
+      "source": "release/overlays/README.en.md",
+      "sourceSha256": "d2c4670fe9bd685a1ee62086ea8648e82e7b60ec553130098eea1efd9864d780",
+      "sha256": "d2c4670fe9bd685a1ee62086ea8648e82e7b60ec553130098eea1efd9864d780",
+      "bytes": 5756,
       "transform": null
     },
     {
@@ -1515,5 +1523,13 @@
       "transform": null
     }
   ],
-  "gitHistoryIncluded": false
+  "gitHistoryIncluded": false,
+  "documentationUpdate": {
+    "baseCommit": "1ef270fdd7ac5ac548bc47025b5d8d5b87baa2cc",
+    "scope": [
+      "README.md",
+      "README.en.md"
+    ],
+    "preservedReleaseTag": "v0.1.0"
+  }
 }

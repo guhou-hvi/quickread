@@ -1,5 +1,7 @@
 # QuickRead v0.1.0
 
+简体中文 · [English](README.en.md)
+
 作者：**guhou-hvi** · **源码公开、个人非商业使用**
 
 项目仓库：[guhou-hvi/quickread](https://github.com/guhou-hvi/quickread)。使用范围见 [许可说明](docs/license-guide.md) 和 [LICENSE](LICENSE)。
