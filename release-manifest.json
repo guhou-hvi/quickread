@@ -365,17 +365,17 @@
     {
       "path": "README.md",
       "source": "release/overlays/README.md",
-      "sourceSha256": "285a6c13204206480b21b899083ab55923e751e0e623e67e3fbb59e396e71a6f",
-      "sha256": "285a6c13204206480b21b899083ab55923e751e0e623e67e3fbb59e396e71a6f",
-      "bytes": 6553,
+      "sourceSha256": "e2cb38700ad6b4e90441968f20a169ea15d39c581aba2fd01907cb5bd10572f4",
+      "sha256": "e2cb38700ad6b4e90441968f20a169ea15d39c581aba2fd01907cb5bd10572f4",
+      "bytes": 7961,
       "transform": null
     },
     {
       "path": "README.en.md",
       "source": "release/overlays/README.en.md",
-      "sourceSha256": "8c8cc1f3a48229ef2d7ce1927e3848dd836fecc523779810be2ee4b789438eb3",
-      "sha256": "8c8cc1f3a48229ef2d7ce1927e3848dd836fecc523779810be2ee4b789438eb3",
-      "bytes": 6988,
+      "sourceSha256": "7ae7a99c24bd0d180f078759d2556bde36fa0aa9a6a1e5ed2a0ce053d02cd2b1",
+      "sha256": "7ae7a99c24bd0d180f078759d2556bde36fa0aa9a6a1e5ed2a0ce053d02cd2b1",
+      "bytes": 8499,
       "transform": null
     },
     {
@@ -1525,12 +1525,12 @@
   ],
   "gitHistoryIncluded": false,
   "documentationUpdate": {
-    "baseCommit": "61e1e5780001438292db3c84e0e18cd7837bd8f4",
+    "baseCommit": "2eac882e0306b206df48552d5cd2272eae8e982e",
     "scope": [
       "README.md",
       "README.en.md"
     ],
-    "purpose": "personal-voice-and-reading-hierarchy",
+    "purpose": "customization-and-two-reading-editions",
     "preservedReleaseTag": "v0.1.0"
   }
 }

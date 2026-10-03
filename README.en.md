@@ -4,7 +4,11 @@
 
 **Get the key information first. Decide what deserves a closer look.**
 
-QuickRead turns local text into two reading outputs: a **visual quick read** and an **in-depth reading document**. Meet **QR-Pilot**, its AI reading editor: an Agent that follows the project's workflow to organize, check, review, and render your material.
+**Shape the reading around your questions. Get both a quick read and a deeper look.** QuickRead's AI reading editor, **QR-Pilot**, turns local subtitles, transcripts, and articles into a **visual quick read** and an **in-depth reading document**. Your Agent can adjust the focus, level of detail, and page design.
+
+- **Organize around your interests:** focus on technical mechanisms or product decisions, and save those preferences in your own project.
+- **Get both reading editions:** use the quick-read edition for the main ideas, then open the in-depth edition for the reasons, background, and qualifications.
+- **Check the reasoning and sources:** keep important judgments attributed, with their conditions and references.
 
 [See the demo (Chinese)](docs/examples.md) · [Quick start (Chinese)](docs/getting-started.md) · [Customize it (Chinese)](docs/customization.md)
 
@@ -36,12 +40,41 @@ QuickRead organizes material by theme and brings those reasons and qualification
 
 ## One document, two reading outputs
 
-| Reading output | What it is for | Files |
+The standard workflow **produces both editions**. Choose where to start and when to go deeper.
+
+| Reading edition | Output and purpose | Files |
 | --- | --- | --- |
-| Visual quick read | Find the main themes and key judgments | Responsive HTML, mobile and desktop PNGs |
-| In-depth reading document | Follow the reasoning, background, and important qualifications | Markdown |
+| **Quick-read edition** | Visual quick read: find the main themes and key judgments | Responsive HTML, mobile and desktop PNGs |
+| **In-depth edition** | In-depth reading document: follow the reasoning, background, and important qualifications | Markdown |
+
+These names describe how much detail you read, not different processing-speed modes.
 
 A source and evidence index supports further checking. When QR-Pilot editorial notes appear in the quick read, they are separate from speaker views. The in-depth document uses third-person narration and contains no QR-Pilot commentary cards.
+
+## Make it suit your reading
+
+More interested in technical details or product decisions? Prefer a tighter quick read or more room for background? Tell your Agent what would help.
+
+| What to adjust | An example preference |
+| --- | --- |
+| **Focus** | Emphasize technical mechanisms or product decisions |
+| **Level of detail** | Keep the quick read compact, with key reasons and qualifications intact |
+| **Page design** | Use a warm white background and larger text for reading on a phone |
+
+Try this instruction:
+
+```text
+I'm most interested in product decisions. Emphasize goals, constraints,
+reasons for each choice, and trade-offs. Keep the quick-read edition compact
+and retain useful background in the in-depth edition. Preserve important
+qualifications and source references in both.
+Use a warm white page background and larger body text for reading on a phone.
+Check and coordinate the local prompts, configuration, and CSS, and save
+these preferences in my project's instructions. Apply them first to the next
+new case. Explain the scope of the changes and check desktop and mobile rendering.
+```
+
+Customization works through Agent edits to local prompts, configuration, and the CSS used by the renderer. You can keep those preferences in your own project. The [customization guide (Chinese)](docs/customization.md) points to the relevant files and explains scope, regeneration, and review requirements for existing outputs.
 
 ## 🛠️ Start your first read
 
@@ -87,14 +120,6 @@ The Agent follows the processing and review protocol, then saves the reading out
 Prefer SRT or VTT when timestamps are available. Check names, numbers, technical terms, negations, and speaker attribution after transcription. Media acquisition and speech-to-text happen outside QuickRead; its current inputs are local text files.
 
 See [setup and material preparation (Chinese)](docs/getting-started.md) for the detailed steps.
-
-## Make it suit your reading
-
-You can ask your Agent to adjust the focus, level of detail, and visual style. For example:
-
-> I'm most interested in product decisions. Emphasize the goals, constraints, reasons for each choice, and trade-offs, while preserving important qualifications and source references. Use the existing prompts and configuration to apply this preference to the next document.
-
-The [customization guide (Chinese)](docs/customization.md) provides instructions and points to the files that control these choices. The [workflow reference (Chinese)](docs/workflow.md) explains the processing steps and commands.
 
 ## License
 
